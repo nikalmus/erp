@@ -17,5 +17,22 @@
             <td>{{ bom[2] }}</td>
         </tr>
     </table>
+    <h2>BoM Lines:</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Component ID</th>
+            <th>Component Name</th>
+            <th>Quantity</th>
+        </tr>
+        {% for bom_line in bom_lines %}
+        <tr>
+            <td>{{ bom_line[0] }}</td>
+            <td><a href="/products/{{ bom_line[2] }}">{{ bom_line[2] }}</a></td>
+            <td>{{ bom_line[3] }}</td>
+            <td>{{ bom_line[4] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 </body>
 </html>

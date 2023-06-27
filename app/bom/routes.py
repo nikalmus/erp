@@ -21,16 +21,20 @@ def get_bom(id):
     conn = connect()
     cursor = conn.cursor()
 
-    #cursor.execute("SELECT * FROM bom WHERE id = %s", (id,))
     cursor.execute("SELECT bom.id, product.id, product.name \
                    FROM bom JOIN product ON bom.product_id = product.id \
                    WHERE bom.id = %s", (id,))
 
     bom = cursor.fetchone()
 
-    print(bom)
+    cursor.execute("SELECT bom_line.id, bom_line.bom_id, bom_line.component_id, \
+                   product.name, bom_line.quantity \
+                   FROM bom_line JOIN product ON bom_line.component_id = product.id \
+                   WHERE bom_line.bom_id = %s", (id,))
+
+    bom_lines = cursor.fetchall()
 
     cursor.close()
     conn.close()
 
-    return render_template('bom_detail.html', bom=bom)
+    return render_template('bom_detail.html', bom=bom, bom_lines=bom_lines)
