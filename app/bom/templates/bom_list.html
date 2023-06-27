@@ -1,0 +1,12 @@
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Product</th>
+    </tr>
+    {% for bom in boms %}
+    <tr>
+        <td>{{ bom[0] }}</td>
+        <td><a href="{{ url_for('bom.get_bom', id=bom[0]) }}">{{ bom[1] }}</a></td>
+    </tr>
+    {% endfor %}
+</table>

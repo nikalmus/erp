@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BoM Details</title>
+</head>
+<body>
+    <h1>BoM Details</h1>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Product ID</th>
+            <th>Product Name</th>
+        </tr>
+        <tr>
+            <td>{{ bom[0] }}</td>
+            <td><a href="/products/{{ bom[1] }}">{{ bom[1] }}</a></td>
+            <td>{{ bom[2] }}</td>
+        </tr>
+    </table>
+</body>
+</html>
