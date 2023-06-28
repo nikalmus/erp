@@ -2,14 +2,15 @@
     <tr>
         <th>ID</th>
         <th>Date Created</th>
+        <th>Date Done</th>
         <th>BoM ID</th>
         <th>Status</th>
     </tr>
     {% for mo in mos %}
     <tr>
         <td><a href="{{ url_for('mo.get_mo', id=mo[0]) }}">{{ mo[0] }}</a></td>
-        <td>{{ mo[1] }}</td>
-        <td>{{ mo[2] }}</td>
+        <td>{{ mo[1].strftime('%Y-%m-%d %H:%M') if mo[1] else '' }}</td>
+        <td>{{ mo[2].strftime('%Y-%m-%d %H:%M') if mo[2] else '' }}</td>
         <td><a href="/boms/{{ mo[3] }}">{{ mo[3] }}</a></td>
         <td>{{ mo[4] }}</td>
     </tr>

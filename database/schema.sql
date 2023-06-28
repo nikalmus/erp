@@ -25,9 +25,11 @@ CREATE TABLE bom_line (
 CREATE TABLE mo (
   id serial PRIMARY KEY,
   description text,
-  date_created date,
+  date_created timestamptz DEFAULT now(),
+  date_done timestamptz,
   bom_id integer REFERENCES bom (id),
-  status mo_status
+  status mo_status,
+  CONSTRAINT date_created_read_only CHECK (date_created = DEFAULT)
 );
 
 -- Define the mo_status enum type

@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template
 from app.db import connect
 
+
 bp = Blueprint('mo', __name__, template_folder='templates')
 
 @bp.route('/mos')
@@ -8,7 +9,7 @@ def get_mos():
     conn = connect()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM mo")
+    cursor.execute("SELECT id, date_created, date_done, bom_id, status FROM mo")
     mos = cursor.fetchall()
 
     cursor.close()
@@ -21,7 +22,7 @@ def get_mo(id):
     conn = connect()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT mo.id, mo.date_created, mo.bom_id, mo.status  \
+    cursor.execute("SELECT mo.id, mo.date_created, mo.date_done, mo.bom_id, mo.status  \
                    FROM mo JOIN bom ON mo.bom_id = bom.id \
                    WHERE mo.id = %s", (id,))
 
