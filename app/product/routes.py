@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, redirect, url_for
 from app.db import connect
 
 bp = Blueprint('products', __name__, template_folder='templates')
@@ -30,3 +30,7 @@ def get_product(id):
     conn.close()
 
     return render_template('product_detail.html', product=product)
+
+@bp.route('/products/')
+def redirect_to_products():
+    return redirect(url_for('products.get_products'))

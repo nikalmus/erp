@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, redirect, url_for
 from app.db import connect
 
 
@@ -51,3 +51,6 @@ def get_mo(id):
     return render_template('mo_detail.html', mo=mo, bom_lines=bom_lines, components_cost=components_cost)
 
 
+@bp.route('/mos/')
+def redirect_to_products():
+    return redirect(url_for('mo.get_mos'))

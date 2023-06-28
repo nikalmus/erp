@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, redirect, url_for
 from app.db import connect
 
 bp = Blueprint('bom', __name__, template_folder='templates')
@@ -39,3 +39,7 @@ def get_bom(id):
     conn.close()
 
     return render_template('bom_detail.html', bom=bom, bom_lines=bom_lines, components_cost=components_cost)
+
+@bp.route('/boms/')
+def redirect_to_products():
+    return redirect(url_for('bom.get_boms'))
