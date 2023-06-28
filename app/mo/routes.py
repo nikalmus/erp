@@ -9,7 +9,12 @@ def get_mos():
     conn = connect()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT id, date_created, date_done, bom_id, status FROM mo")
+    cursor.execute("SELECT mo.id, mo.date_created, mo.date_done, mo.bom_id, mo.status, product.id, product.name \
+                FROM mo JOIN bom ON mo.bom_id = bom.id \
+                JOIN product ON bom.product_id = product.id"
+                )
+    
+
     mos = cursor.fetchall()
 
     cursor.close()
@@ -22,8 +27,9 @@ def get_mo(id):
     conn = connect()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT mo.id, mo.date_created, mo.date_done, mo.bom_id, mo.status  \
+    cursor.execute("SELECT mo.id, mo.date_created, mo.date_done, mo.bom_id, mo.status, product.id, product.name  \
                    FROM mo JOIN bom ON mo.bom_id = bom.id \
+                   JOIN product ON bom.product_id = product.id \
                    WHERE mo.id = %s", (id,))
 
     mo = cursor.fetchone()
