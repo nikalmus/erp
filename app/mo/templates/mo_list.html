@@ -1,0 +1,17 @@
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Date Created</th>
+        <th>BoM ID</th>
+        <th>Status</th>
+    </tr>
+    {% for mo in mos %}
+    <tr>
+        <td><a href="{{ url_for('mo.get_mo', id=mo[0]) }}">{{ mo[0] }}</a></td>
+        <td>{{ mo[1] }}</td>
+        <td>{{ mo[2] }}</td>
+        <td><a href="/boms/{{ mo[3] }}">{{ mo[3] }}</a></td>
+        <td>{{ mo[4] }}</td>
+    </tr>
+    {% endfor %}
+</table>

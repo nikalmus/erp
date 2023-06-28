@@ -24,7 +24,6 @@ CREATE TABLE bom_line (
 -- Create the mo table
 CREATE TABLE mo (
   id serial PRIMARY KEY,
-  name varchar(255),
   description text,
   date_created date,
   bom_id integer REFERENCES bom (id),

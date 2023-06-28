@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MO Details</title>
+</head>
+<body>
+    <h1>MO Details</h1>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Date Created</th>
+            <th>BoM ID</th>
+            <th>Status</th>
+        </tr>
+        <tr>
+            <td>{{ mo[0] }}</td>
+            <td>{{ mo[1] }}</td>
+            <td><a href="/boms/{{ mo[2] }}">{{ mo[2] }}</a></td>
+            <td>{{ mo[3] }}</td>
+        </tr>
+    </table>
+    <h2>BoM Lines:</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Component ID</th>
+            <th>Component Name</th>
+            <th>Quantity</th>
+        </tr>
+        {% for bom_line in bom_lines %}
+        <tr>
+            <td>{{ bom_line[0] }}</td>
+            <td><a href="/products/{{ bom_line[2] }}">{{ bom_line[2] }}</a></td>
+            <td>{{ bom_line[3] }}</td>
+            <td>{{ bom_line[4] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
