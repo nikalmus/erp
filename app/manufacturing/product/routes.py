@@ -3,7 +3,7 @@ from app.db import connect
 
 bp = Blueprint('products', __name__, template_folder='templates')
 
-@bp.route('/products')
+@bp.route('/manufacturing/products')
 def get_products():
     conn = connect()  
     cursor = conn.cursor()
@@ -16,7 +16,7 @@ def get_products():
 
     return render_template('product_list.html', products=products)
 
-@bp.route('/products/<int:id>')
+@bp.route('/manufacturingproducts/<int:id>')
 def get_product(id):
     conn = connect()  
     cursor = conn.cursor()
@@ -31,6 +31,6 @@ def get_product(id):
 
     return render_template('product_detail.html', product=product)
 
-@bp.route('/products/')
+@bp.route('/manufacturing/products/')
 def redirect_to_products():
     return redirect(url_for('products.get_products'))

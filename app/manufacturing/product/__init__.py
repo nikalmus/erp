@@ -1,0 +1,1 @@
+from app.manufacturing.product import routes

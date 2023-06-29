@@ -1,0 +1,1 @@
+from app.manufacturing.bom import routes

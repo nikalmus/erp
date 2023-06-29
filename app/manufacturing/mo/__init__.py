@@ -1,0 +1,1 @@
+from app.manufacturing.mo import routes

@@ -4,7 +4,7 @@ from app.db import connect
 
 bp = Blueprint('mo', __name__, template_folder='templates')
 
-@bp.route('/mos')
+@bp.route('/manufacturing/mos')
 def get_mos():
     conn = connect()
     cursor = conn.cursor()
@@ -23,7 +23,7 @@ def get_mos():
 
     return render_template('mo_list.html', mos=mos)
 
-@bp.route('/mos/<int:id>')
+@bp.route('/manufacturing/mos/<int:id>')
 def get_mo(id):
     conn = connect()
     cursor = conn.cursor()
@@ -51,6 +51,6 @@ def get_mo(id):
     return render_template('mo_detail.html', mo=mo, bom_lines=bom_lines, components_cost=components_cost)
 
 
-@bp.route('/mos/')
+@bp.route('/manufacturing/mos/')
 def redirect_to_products():
     return redirect(url_for('mo.get_mos'))
