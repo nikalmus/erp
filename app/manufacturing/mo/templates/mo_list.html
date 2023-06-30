@@ -1,3 +1,4 @@
+<h3>Manufacturing Orders</h3>
 <table>
     <tr>
         <th>ID</th>
@@ -12,9 +13,9 @@
         <td><a href="{{ url_for('mo.get_mo', id=mo[0]) }}">{{ mo[0] }}</a></td>
         <td>{{ mo[1].strftime('%Y-%m-%d %H:%M') if mo[1] else '' }}</td>
         <td>{{ mo[2].strftime('%Y-%m-%d %H:%M') if mo[2] else '' }}</td>
-        <td><a href="/boms/{{ mo[3] }}">{{ mo[3] }}</a></td>
+        <td><a href="/manufacturing/boms/{{ mo[3] }}">{{ mo[3] }}</a></td>
         <td>{{ mo[4] }}</td>
-        <td><a href="/products/{{ mo[5] }}">{{ mo[6] }}</a></td>
+        <td><a href="/manufacturing/products/{{ mo[5] }}">{{ mo[6] }}</a></td>
     </tr>
     {% endfor %}
 </table>

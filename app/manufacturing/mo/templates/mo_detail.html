@@ -18,7 +18,7 @@
             <td>{{ mo[0] }}</td>
             <td>{{ mo[1].strftime('%Y-%m-%d %H:%M') if mo[1] else '' }}</td>
             <td>{{ mo[2].strftime('%Y-%m-%d %H:%M') if mo[2] else '' }}</td>
-            <td><a href="/boms/{{ mo[3] }}">{{ mo[3] }}</a></td>
+            <td><a href="/manufacturing/boms/{{ mo[3] }}">{{ mo[3] }}</a></td>
             <td>{{ mo[4] }}</td>
         </tr>
     </table>
@@ -35,7 +35,7 @@
         {% for bom_line in bom_lines %}
         <tr>
             <td>{{ bom_line[0] }}</td>
-            <td><a href="/products/{{ bom_line[2] }}">{{ bom_line[2] }}</a></td>
+            <td><a href="/manufacturing/products/{{ bom_line[2] }}">{{ bom_line[2] }}</a></td>
             <td>{{ bom_line[3] }}</td>
             <td>{{ bom_line[4] }}</td>
             <td>{{ bom_line[5] }}</td>

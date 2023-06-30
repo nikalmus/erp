@@ -13,7 +13,7 @@
         </tr>
         <tr>
             <td>{{ bom[0] }}</td>
-            <td><a href="/products/{{ bom[1] }}">{{ bom[1] }}</a></td>
+            <td><a href="/manufacturing/products/{{ bom[1] }}">{{ bom[1] }}</a></td>
             <td>{{ bom[2] }}</td>
         </tr>
     </table>
@@ -30,7 +30,7 @@
         {% for bom_line in bom_lines %}
         <tr>
             <td>{{ bom_line[0] }}</td>
-            <td><a href="/products/{{ bom_line[2] }}">{{ bom_line[2] }}</a></td>
+            <td><a href="/manufacturing/products/{{ bom_line[2] }}">{{ bom_line[2] }}</a></td>
             <td>{{ bom_line[3] }}</td>
             <td>{{ bom_line[4] }}</td>
             <td>{{ bom_line[5] }}</td>

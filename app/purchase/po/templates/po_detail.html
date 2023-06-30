@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Purchase Order Details</title>
+</head>
+<body>
+    <h3>Purchase Order {{ po[0] }} Details</h3>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Supplier</th>
+            <th>Created Date</th>
+            <th>Purchase Date</th>
+            <th>Status</th>
+        </tr>
+        <tr>
+            <td>{{ po[0] }}</td>
+            <td><a href="/purchase/suppliers/{{ po[1] }}">{{ po[1] }}</a></td>
+            <td>{{ po[2].strftime('%Y-%m-%d %H:%M') if po[2] else '' }}</td>
+            <td>{{ po[3].strftime('%Y-%m-%d %H:%M') if po[3] else '' }}</td>
+            <td>{{ po[4] }}</td>
+        </tr>
+    </table>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<h3>Purchase Orders</h3>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Supplier</th>
+        <th>Purchase Date</th>
+        <th>Created Date</th>
+        <th>Status</th>
+
+    </tr>
+    {% for po in pos %}
+    <tr>
+        <td><a href="{{ url_for('po.get_po', id=po[0]) }}">{{ po[0] }}</a></td>
+        <td><a href="/purchase/suppliers/{{ po[1] }}">{{ po[1] }}</a></td>
+        <td>{{ po[2].strftime('%Y-%m-%d %H:%M') if po[2] else '' }}</td>
+        <td>{{ po[3].strftime('%Y-%m-%d %H:%M') if po[3] else '' }}</td>
+        <td>{{ po[4] }}</td>
+    </tr>
+    {% endfor %}
+</table>

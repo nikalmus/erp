@@ -71,23 +71,25 @@ CREATE TABLE supplier (
 );
 
 -- Define the purchase_status enum type
-CREATE TYPE purchase_status AS ENUM ('Draft', 'Pending Approval', 'Approved', 'In Progress', 'Completed', 'Cancelled');
+CREATE TYPE po_status AS ENUM ('Draft', 'Pending Approval', 'Approved', 'In Progress', 'Completed', 'Cancelled');
 
 -- Create the purchase table
-CREATE TABLE purchase (
+CREATE TABLE po (
   id serial PRIMARY KEY,
   supplier_id integer REFERENCES supplier (id),
-  purchase_date date,
-  status purchase_status
+  created_date timestamptz DEFAULT now(),
+  purchase_date timestamptz,
+  status po_status,
+  CONSTRAINT valid_status CHECK (status = ANY (ARRAY['Draft'::po_status, 'Pending Approval'::po_status, 'Approved'::po_status, 'In Progress'::po_status, 'Completed'::po_status, 'Cancelled'::po_status]))
 );
 
+
 -- Create the purchase_line table
-CREATE TABLE purchase_line (
+CREATE TABLE po_line (
   id serial PRIMARY KEY,
-  purchase_id integer REFERENCES purchase (id),
+  po_id integer REFERENCES po (id),
   product_id integer REFERENCES product (id),
-  quantity integer,
-  unit_price numeric(10,2)
+  quantity integer
 );
 
 

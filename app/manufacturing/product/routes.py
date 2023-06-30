@@ -16,15 +16,13 @@ def get_products():
 
     return render_template('product_list.html', products=products)
 
-@bp.route('/manufacturingproducts/<int:id>')
+@bp.route('/manufacturing/products/<int:id>')
 def get_product(id):
     conn = connect()  
     cursor = conn.cursor()
 
     cursor.execute("SELECT * FROM product WHERE id = %s", (id,))
     product = cursor.fetchone()
-
-    print(product) 
 
     cursor.close()
     conn.close()

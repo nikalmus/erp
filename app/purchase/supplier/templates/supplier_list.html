@@ -1,0 +1,15 @@
+<h3>Suppliers</h3>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>email</th>
+    </tr>
+    {% for supplier in suppliers %}
+    <tr>
+        <td>{{ supplier[0] }}</td>
+        <td><a href="{{ url_for('supplier.get_supplier', id=supplier[0]) }}">{{ supplier[1] }}</a></td>
+        <td>{{ supplier[2] }}</td>
+    </tr>
+    {% endfor %}
+</table>

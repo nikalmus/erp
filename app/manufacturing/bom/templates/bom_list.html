@@ -5,8 +5,8 @@
     </tr>
     {% for bom in boms %}
     <tr>
-        <td>{{ bom[0] }}</td>
-        <td><a href="{{ url_for('bom.get_bom', id=bom[0]) }}">{{ bom[1] }}</a></td>
+        <td><a href="{{ url_for('bom.get_bom', id=bom[0]) }}">{{ bom[0] }}</a></td>
+        <td><a href="/manufacturing/products/{{ bom[1] }}">{{ bom[1] }}</a></td>
     </tr>
     {% endfor %}
 </table>
