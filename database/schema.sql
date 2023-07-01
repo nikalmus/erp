@@ -41,15 +41,12 @@ ALTER TABLE mo ADD CONSTRAINT valid_status CHECK (status = ANY (ARRAY['Pending':
 -- Define the location_type enum 
 CREATE TYPE location_type AS ENUM ('Warehouse', 'Factory', 'Repair' );
 
--- Define the stock_move_type enum 
-CREATE TYPE stock_move_type AS ENUM ('In', 'Out');
 
 -- Create the inventory_item table
 CREATE TABLE inventory_item (
   id serial PRIMARY KEY,
   product_id integer REFERENCES product (id),
   serial_number varchar(255),
-  qr_code varchar(255),
   location location_type
 );
 
@@ -57,7 +54,6 @@ CREATE TABLE inventory_item (
 CREATE TABLE stock_move (
   id serial PRIMARY KEY,
   inventory_item_id integer REFERENCES inventory_item (id),
-  move_type stock_move_type,
   source_location location_type,
   destination_location location_type,
   move_date timestamptz DEFAULT now()

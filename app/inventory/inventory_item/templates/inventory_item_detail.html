@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inventory Item Details</title>
+</head>
+<body>
+    <h3>Inventory Item <a href="/manufacturing/products/{{ inventory_item[1] }}">{{ inventory_item[4] }}</a> Details</h3>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Serial Number</th>
+            <th>Location</th>
+        </tr>
+        <tr>
+            <td>{{ inventory_item[0] }}</td>
+            <td>{{ inventory_item[2] }}</td>
+            <td>{{ inventory_item[3] }}</td>
+        </tr>
+    </table>
+</body>
+</html>

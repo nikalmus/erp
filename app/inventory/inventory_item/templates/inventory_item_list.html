@@ -1,0 +1,16 @@
+<h3>Inventory Items</h3>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Product</th>
+        <th>Serial Number</th>
+
+    </tr>
+    {% for inventory_item in inventory_items %}
+    <tr>
+        <td><a href="{{ url_for('item.get_inventory_item', id=inventory_item[0]) }}">{{ inventory_item[0] }}</a></td>
+        <td><a href="/manufacturing/products/{{ inventory_item[1] }}">{{ inventory_item[1] }}</a></td>
+        <td>{{ inventory_item[2] }}</td>
+    </tr>
+    {% endfor %}
+</table>

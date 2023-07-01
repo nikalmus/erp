@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stock Move Details</title>
+</head>
+<body>
+    <h3>Stock Move Details</h3>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Inventory Item ID</th>
+            <th>Source</th>
+            <th>Destination</th>
+            <th>Move Date</th>
+            <th>Product<th>
+
+        </tr>
+        <tr>
+            <td>{{ stock_move[0] }}</td>
+            <td>{{ stock_move[1] }}</td>
+            <td>{{ stock_move[2] }}</td>
+            <td>{{ stock_move[3] }}</td>
+            <td>{{ stock_move[4].strftime('%Y-%m-%d %H:%M') if stock_move[4] else '' }}</td>
+            <td><a href="/manufacturing/product/{{ stock_move[6] }}">{{ stock_move[6] }}</a></td>
+        </tr>
+    </table>
+</body>
+</html>
