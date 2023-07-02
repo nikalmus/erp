@@ -29,6 +29,7 @@
             <th>Component ID</th>
             <th>Component Name</th>
             <th>Quantity</th>
+            <th>Available</th>
             <th>Unit Price</th>
             <th>Cost</th>
         </tr>
@@ -38,6 +39,14 @@
             <td><a href="/manufacturing/products/{{ bom_line[2] }}">{{ bom_line[2] }}</a></td>
             <td>{{ bom_line[3] }}</td>
             <td>{{ bom_line[4] }}</td>
+            <td>
+                {% if bom_line[6] <= bom_line[4] %}
+                  {{ bom_line[6] }} / {{ bom_line[4] }}
+                {% else %}
+                  {{ bom_line[4] }} / {{ bom_line[4] }}
+                {% endif %}
+              </td>
+              
             <td>{{ bom_line[5] }}</td>
             <td>{{ bom_line[5] * bom_line[4] }}</td>
         </tr>

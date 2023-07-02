@@ -36,11 +36,27 @@ def get_mo(id):
 
     mo = cursor.fetchone()
 
-    cursor.execute("SELECT bom_line.id, bom_line.bom_id, bom_line.component_id, \
-                   product.name, bom_line.quantity, product.price \
-                   FROM bom_line JOIN mo ON bom_line.bom_id = mo.bom_id \
-                   JOIN product ON bom_line.component_id = product.id \
-                   WHERE mo.id = %s", (id,))
+    # cursor.execute("SELECT bom_line.id, bom_line.bom_id, bom_line.component_id, \
+    #                product.name, bom_line.quantity, product.price \
+    #                FROM bom_line JOIN mo ON bom_line.bom_id = mo.bom_id \
+    #                JOIN product ON bom_line.component_id = product.id \
+    #                WHERE mo.id = %s", (id,))
+
+    cursor.execute("SELECT bom_line.id, \
+                           bom_line.bom_id, \
+                           bom_line.component_id, \
+                           product.name, \
+                           bom_line.quantity, \
+                           product.price, \
+                          (SELECT COUNT(*) FROM inventory_item \
+                           WHERE product_id = bom_line.component_id \
+                           AND location = 'Warehouse') AS available_count \
+                           FROM bom_line \
+                           JOIN \
+                           mo ON bom_line.bom_id = mo.bom_id \
+                           JOIN \
+                           product ON bom_line.component_id = product.id \
+                           WHERE mo.id = %s", (id,))
 
     bom_lines = cursor.fetchall()
     components_cost = sum(bom_line[5] * bom_line[4] for bom_line in bom_lines)
