@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for
+from flask import Blueprint, render_template, redirect, request, url_for
 from app.db import connect
 
 bp = Blueprint('po', __name__, template_folder='templates')
@@ -40,3 +40,44 @@ def get_po(id):
 @bp.route('/purchase/pos/')
 def redirect_to_products():
     return redirect(url_for('po.get_pos'))
+
+@bp.route('/purchase/pos/create', methods=['GET', 'POST'])
+def create_po():
+    if request.method == 'POST':
+        # Retrieve form data
+        supplier_id = request.form.get('supplier')
+        product_id = request.form.get('product')
+
+        # Create a new PO
+        conn = connect()
+        cursor = conn.cursor()
+
+        # Insert the new PO into the database
+        cursor.execute("INSERT INTO po (supplier_id, product_id) VALUES (%s, %s) RETURNING id", (supplier_id, product_id))
+        po_id = cursor.fetchone()[0]
+
+        cursor.close()
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for('po.get_po', id=po_id))
+
+    # Retrieve the list of suppliers and products
+    conn = connect()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT id, name FROM supplier")
+    suppliers = cursor.fetchall()
+
+    cursor.execute("SELECT id, name FROM product")
+    products = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return render_template('po_create.html', suppliers=suppliers, products=products)
+
+
+
+
+

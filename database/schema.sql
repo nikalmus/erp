@@ -41,6 +41,34 @@ ALTER TABLE mo ADD CONSTRAINT valid_status CHECK (status = ANY (ARRAY['Pending':
 -- Define the location_type enum 
 CREATE TYPE location_type AS ENUM ('Warehouse', 'Factory', 'Repair' );
 
+-- Create the supplier table
+CREATE TABLE supplier (
+  id serial PRIMARY KEY,
+  name varchar(255),
+  email varchar(255)
+);
+
+-- Define the purchase_status enum type
+CREATE TYPE po_status AS ENUM ('Draft', 'Pending Approval', 'Approved', 'In Progress', 'Completed', 'Cancelled');
+
+-- Create the purchase table
+CREATE TABLE po (
+  id serial PRIMARY KEY,
+  supplier_id integer REFERENCES supplier (id),
+  inventory_item_id integer REFERENCES inventory_item (id),
+  created_date timestamptz DEFAULT now(),
+  purchase_date timestamptz,
+  status po_status DEFAULT 'Draft',
+  CONSTRAINT valid_status CHECK (status = ANY (ARRAY['Draft'::po_status, 'Pending Approval'::po_status, 'Approved'::po_status, 'In Progress'::po_status, 'Completed'::po_status, 'Cancelled'::po_status]))
+);
+
+-- Create the purchase_line table
+CREATE TABLE po_line (
+  id serial PRIMARY KEY,
+  po_id integer REFERENCES po (id),
+  product_id integer REFERENCES product (id),
+  quantity integer
+);
 
 -- Create the inventory_item table
 CREATE TABLE inventory_item (
@@ -59,33 +87,5 @@ CREATE TABLE stock_move (
   move_date timestamptz DEFAULT now()
 );
 
--- Create the supplier table
-CREATE TABLE supplier (
-  id serial PRIMARY KEY,
-  name varchar(255),
-  email varchar(255)
-);
-
--- Define the purchase_status enum type
-CREATE TYPE po_status AS ENUM ('Draft', 'Pending Approval', 'Approved', 'In Progress', 'Completed', 'Cancelled');
-
--- Create the purchase table
-CREATE TABLE po (
-  id serial PRIMARY KEY,
-  supplier_id integer REFERENCES supplier (id),
-  created_date timestamptz DEFAULT now(),
-  purchase_date timestamptz,
-  status po_status,
-  CONSTRAINT valid_status CHECK (status = ANY (ARRAY['Draft'::po_status, 'Pending Approval'::po_status, 'Approved'::po_status, 'In Progress'::po_status, 'Completed'::po_status, 'Cancelled'::po_status]))
-);
-
-
--- Create the purchase_line table
-CREATE TABLE po_line (
-  id serial PRIMARY KEY,
-  po_id integer REFERENCES po (id),
-  product_id integer REFERENCES product (id),
-  quantity integer
-);
 
 
