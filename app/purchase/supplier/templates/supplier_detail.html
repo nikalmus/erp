@@ -1,9 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Supplier Details</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block content %}
     <h3>Supplier {{ supplier[1] }} Details</h3>
     <table>
         <tr>
@@ -17,5 +13,4 @@
             <td>{{ supplier[2] }}</td>
         </tr>
     </table>
-</body>
-</html>
+    {% endblock %}

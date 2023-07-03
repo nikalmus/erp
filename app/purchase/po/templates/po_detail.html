@@ -1,9 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Purchase Order Details</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block content %}
     <h3>Purchase Order {{ po[0] }} Details</h3>
     <table>
         <tr>
@@ -49,8 +45,7 @@
             <td><strong>Total: {{ total }}</strong></td>
         </tr>
     </table>
-</body>
-</html>
+{% endblock %}
 
 
     

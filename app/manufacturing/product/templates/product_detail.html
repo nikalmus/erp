@@ -1,9 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Product Details</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block content %}
     <h3>{{ product[1] }}</h3>
     <table>
         <tr>
@@ -21,5 +17,4 @@
             <td>{{ product[4] }}</td>
         </tr>
     </table>
-</body>
-</html>
+    {% endblock %}

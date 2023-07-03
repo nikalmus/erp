@@ -28,3 +28,7 @@ def get_supplier(id):
     conn.close()
 
     return render_template('supplier_detail.html', supplier=supplier)
+
+@bp.route('/purchase/suppliers/')
+def redirect_to_products():
+    return redirect(url_for('supplier.get_suppliers'))

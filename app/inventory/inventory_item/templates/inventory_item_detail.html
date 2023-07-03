@@ -1,8 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Inventory Item Details</title>
-</head>
+{% extends 'base.html' %}
+{% block content %}
 <body>
     <h3>Inventory Item <a href="/manufacturing/products/{{ inventory_item[1] }}">{{ inventory_item[4] }}</a> Details</h3>
     <table>
@@ -18,4 +15,4 @@
         </tr>
     </table>
 </body>
-</html>
+{% endblock %}

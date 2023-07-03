@@ -36,11 +36,11 @@ def get_mo(id):
 
     mo = cursor.fetchone()
 
-    # cursor.execute("SELECT bom_line.id, bom_line.bom_id, bom_line.component_id, \
-    #                product.name, bom_line.quantity, product.price \
-    #                FROM bom_line JOIN mo ON bom_line.bom_id = mo.bom_id \
-    #                JOIN product ON bom_line.component_id = product.id \
-    #                WHERE mo.id = %s", (id,))
+    cursor.execute("SELECT bom_line.id, bom_line.bom_id, bom_line.component_id, \
+                   product.name, bom_line.quantity, product.price \
+                   FROM bom_line JOIN mo ON bom_line.bom_id = mo.bom_id \
+                   JOIN product ON bom_line.component_id = product.id \
+                   WHERE mo.id = %s", (id,))
 
     cursor.execute("SELECT bom_line.id, \
                            bom_line.bom_id, \

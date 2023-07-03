@@ -1,9 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>MO Details</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block content %}
     <h2><a href="/products/{{ mo[5] }}">{{ mo[6] }}</a></h2>
     <table>
         <tr>
@@ -60,5 +56,4 @@
             <td><strong>Total: {{ components_cost }}</strong></td>
         </tr>
     </table>
-</body>
-</html>
+    {% endblock %}

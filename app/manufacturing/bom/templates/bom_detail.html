@@ -1,9 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>BoM Details</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block content %}
     <h1>{{ bom[2] }} BoM</h1>
     <table>
         <tr>
@@ -46,5 +42,4 @@
             <td><strong>Total: {{ components_cost }}</strong></td>
         </tr>
     </table>
-</body>
-</html>
+{% endblock %}
