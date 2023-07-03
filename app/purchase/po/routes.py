@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, redirect, request, url_for
 from app.db import connect
-
 bp = Blueprint('po', __name__, template_folder='templates')
 
 @bp.route('/purchase/pos')
@@ -8,7 +7,7 @@ def get_pos():
     conn = connect()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM po")
+    cursor.execute("SELECT id, created_date, purchase_date, status, supplier_id FROM po")
     pos = cursor.fetchall()
 
     cursor.close()
@@ -16,12 +15,12 @@ def get_pos():
 
     return render_template('po_list.html', pos=pos)
 
-@bp.route('/purchase/pos/<int:id>')
+@bp.route('/purchase/pos/<int:id>', methods=['GET'])
 def get_po(id):
     conn = connect()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM po WHERE id = %s", (id,))
+    cursor.execute("SELECT id, created_date, purchase_date, status, supplier_id FROM po WHERE id = %s", (id,))
     po = cursor.fetchone()
 
     cursor.execute("SELECT po_line.id, po_line.po_id, po_line.product_id, \
@@ -32,28 +31,32 @@ def get_po(id):
     po_lines = cursor.fetchall()
     total = sum(po_line[5] * po_line[4] for po_line in po_lines)
 
+    cursor.execute("SELECT id, name FROM product")
+    products = cursor.fetchall()
+
     cursor.close()
     conn.close()
 
-    return render_template('po_detail.html', po=po, po_lines=po_lines, total=total)
+    return render_template('po_detail.html', po=po, po_lines=po_lines, total=total, products=products)
 
 @bp.route('/purchase/pos/')
 def redirect_to_products():
     return redirect(url_for('po.get_pos'))
 
+
 @bp.route('/purchase/pos/create', methods=['GET', 'POST'])
 def create_po():
     if request.method == 'POST':
         # Retrieve form data
-        supplier_id = request.form.get('supplier')
-        product_id = request.form.get('product')
+        supplier_id = request.form.get('supplier_id')
 
         # Create a new PO
         conn = connect()
         cursor = conn.cursor()
 
         # Insert the new PO into the database
-        cursor.execute("INSERT INTO po (supplier_id, product_id) VALUES (%s, %s) RETURNING id", (supplier_id, product_id))
+        cursor.execute("INSERT INTO po (supplier_id) VALUES (%s) RETURNING id", (supplier_id,))
+
         po_id = cursor.fetchone()[0]
 
         cursor.close()
@@ -62,22 +65,47 @@ def create_po():
 
         return redirect(url_for('po.get_po', id=po_id))
 
-    # Retrieve the list of suppliers and products
+    # Retrieve the list of suppliers as soon as /create route is accessed
     conn = connect()
     cursor = conn.cursor()
 
     cursor.execute("SELECT id, name FROM supplier")
     suppliers = cursor.fetchall()
 
-    cursor.execute("SELECT id, name FROM product")
-    products = cursor.fetchall()
-
     cursor.close()
     conn.close()
 
-    return render_template('po_create.html', suppliers=suppliers, products=products)
+    return render_template('po_create.html', suppliers=suppliers)
 
+@bp.route('/purchase/pos/<int:id>/add_line', methods=['POST'])
+def add_po_line(id):
+    product_id = request.form.get('product_id')
+    quantity = request.form.get('quantity')
 
+    # Retrieve the PO based on the provided ID
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM po WHERE id = %s", (id,))
+    po = cursor.fetchone()
+    
+    if po is None:
+        # Handle the case where the PO is not found
+        # ...
 
+        cursor.close()
+        conn.close()
+        return redirect(url_for('po.list_pos'))
 
+    # Retrieve the list of products
+    # cursor.execute("SELECT id, name FROM product")
+    # products = cursor.fetchall()
 
+    # Insert the PO line into the database
+    cursor.execute("INSERT INTO po_line (po_id, product_id, quantity) VALUES (%s, %s, %s)",
+                   (id, product_id, quantity))
+
+    cursor.close()
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('po.get_po', id=id))

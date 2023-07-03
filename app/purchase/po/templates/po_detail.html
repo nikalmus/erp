@@ -4,17 +4,17 @@
     <table>
         <tr>
             <th>ID</th>
-            <th>Supplier</th>
             <th>Created Date</th>
             <th>Purchase Date</th>
             <th>Status</th>
+            <th>Supplier</th>
         </tr>
         <tr>
             <td>{{ po[0] }}</td>
-            <td><a href="/purchase/suppliers/{{ po[1] }}">{{ po[1] }}</a></td>
+            <td>{{ po[1].strftime('%Y-%m-%d %H:%M') if po[1] else '' }}</td>
             <td>{{ po[2].strftime('%Y-%m-%d %H:%M') if po[2] else '' }}</td>
-            <td>{{ po[3].strftime('%Y-%m-%d %H:%M') if po[3] else '' }}</td>
-            <td>{{ po[4] }}</td>
+            <td>{{ po[3] }}</td>
+            <td><a href="/purchase/suppliers/{{ po[4] }}">{{ po[4] }}</a></td>
         </tr>
     </table>
     <h3>PO Lines:</h3>
@@ -45,7 +45,21 @@
             <td><strong>Total: {{ total }}</strong></td>
         </tr>
     </table>
+
+    <h3>Add PO Line</h3>
+    <form method="POST" action="{{ url_for('po.add_po_line', id=po[0]) }}">
+        <div class="form-group">
+            <label for="product">Product:</label>
+            <select class="form-control" id="product" name="product_id">
+                {% for product in products %}
+                    <option value="{{ product[0] }}">{{ product[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="quantity">Quantity:</label>
+            <input type="number" class="form-control" id="quantity" name="quantity">
+        </div>
+        <button type="submit" class="btn btn-primary">Add</button>
+    </form>
 {% endblock %}
-
-
-    

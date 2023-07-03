@@ -55,7 +55,6 @@ CREATE TYPE po_status AS ENUM ('Draft', 'Pending Approval', 'Approved', 'In Prog
 CREATE TABLE po (
   id serial PRIMARY KEY,
   supplier_id integer REFERENCES supplier (id),
-  inventory_item_id integer REFERENCES inventory_item (id),
   created_date timestamptz DEFAULT now(),
   purchase_date timestamptz,
   status po_status DEFAULT 'Draft',
@@ -67,6 +66,7 @@ CREATE TABLE po_line (
   id serial PRIMARY KEY,
   po_id integer REFERENCES po (id),
   product_id integer REFERENCES product (id),
+  inventory_item_id integer REFERENCES inventory_item (id),
   quantity integer
 );
 
