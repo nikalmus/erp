@@ -96,13 +96,36 @@ def add_po_line(id):
         conn.close()
         return redirect(url_for('po.list_pos'))
 
-    # Retrieve the list of products
-    # cursor.execute("SELECT id, name FROM product")
-    # products = cursor.fetchall()
-
     # Insert the PO line into the database
     cursor.execute("INSERT INTO po_line (po_id, product_id, quantity) VALUES (%s, %s, %s)",
                    (id, product_id, quantity))
+
+    cursor.close()
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('po.get_po', id=id))
+
+@bp.route('/purchase/pos/<int:id>/set_status', methods=['POST'])
+def set_status(id):
+    status = request.form.get('status')
+
+    # Retrieve the PO based on the provided ID
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM po WHERE id = %s", (id,))
+    po = cursor.fetchone()
+
+    if po is None:
+        # Handle the case where the PO is not found
+        # ...
+
+        cursor.close()
+        conn.close()
+        return redirect(url_for('po.list_pos'))
+
+    # Update the status of the PO
+    cursor.execute("UPDATE po SET status = %s WHERE id = %s", (status, id))
 
     cursor.close()
     conn.commit()

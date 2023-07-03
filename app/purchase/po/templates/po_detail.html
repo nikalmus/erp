@@ -62,4 +62,44 @@
         </div>
         <button type="submit" class="btn btn-primary">Add</button>
     </form>
+
+    {% if po[3] == 'Draft' %}
+        <h3>Progress Status:</h3>
+        <form method="POST" action="{{ url_for('po.set_status', id=po[0]) }}">
+            <button type="submit" class="btn btn-primary" name="status" value="Pending Approval">Request Approval</button>
+        </form>
+    {% endif %}
+
+    {% if po[3] == 'Pending Approval' %}
+        <h3>Set Status:</h3>
+        <form method="POST" action="{{ url_for('po.set_status', id=po[0]) }}">
+            <button type="submit" class="btn btn-primary" name="status" value="Approved">Approved</button>
+            <button type="submit" class="btn btn-primary" name="status" value="Cancelled">Cancel</button>
+        </form>
+    {% endif %}
+
+    {% if po[3] == 'Approved' %}
+        <h3>Set Status:</h3>
+        <form method="POST" action="{{ url_for('po.set_status', id=po[0]) }}">
+            <button type="submit" class="btn btn-primary" name="status" value="In Progress">In Progress</button>
+            <button type="submit" class="btn btn-primary" name="status" value="Completed">Completed</button>
+            <button type="submit" class="btn btn-primary" name="status" value="Cancelled">Cancel</button>
+        </form>
+    {% endif %}
+
+    {% if po[3] == 'In Progress' %}
+        <h3>Set Status:</h3>
+        <form method="POST" action="{{ url_for('po.set_status', id=po[0]) }}">
+            <button type="submit" class="btn btn-primary" name="status" value="Completed">Completed</button>
+            <button type="submit" class="btn btn-primary" name="status" value="Cancelled">Cancel</button>
+        </form>
+    {% endif %}
+
+    {% if po[3] == 'Cancelled' %}
+        <h3>Set Status:</h3>
+        <form method="POST" action="{{ url_for('po.set_status', id=po[0]) }}">
+            <button type="submit" class="btn btn-primary" name="status" value="Draft">Draft</button>
+        </form>
+    {% endif %}
+
 {% endblock %}
