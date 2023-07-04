@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <h3>Suppliers</h3>
+<a href="{{ url_for('supplier.create_supplier') }}" class="btn btn-primary">New</a>
 <table>
     <tr>
         <th>ID</th>
