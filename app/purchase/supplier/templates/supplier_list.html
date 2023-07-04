@@ -6,13 +6,20 @@
     <tr>
         <th>ID</th>
         <th>Name</th>
-        <th>email</th>
+        <th>Email</th>
+        <th>Actions</th>
     </tr>
     {% for supplier in suppliers %}
     <tr>
         <td>{{ supplier[0] }}</td>
         <td><a href="{{ url_for('supplier.get_supplier', id=supplier[0]) }}">{{ supplier[1] }}</a></td>
         <td>{{ supplier[2] }}</td>
+        <td>
+            <a href="{{ url_for('supplier.update_supplier', id=supplier[0]) }}" class="btn btn-primary">Update</a>
+            <form method="POST" action="{{ url_for('supplier.delete_supplier', id=supplier[0]) }}" style="display: inline;">
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+        </td>
     </tr>
     {% endfor %}
 </table>
