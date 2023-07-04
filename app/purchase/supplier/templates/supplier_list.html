@@ -12,7 +12,8 @@
     {% for supplier in suppliers %}
     <tr>
         <td>{{ supplier[0] }}</td>
-        <td><a href="{{ url_for('supplier.get_supplier', id=supplier[0]) }}">{{ supplier[1] }}</a></td>
+        <!-- <td><a href="{{ url_for('supplier.get_supplier', id=supplier[0]) }}">{{ supplier[1] }}</a></td> -->
+        <td>{{ supplier[1] }}</a></td> <!-- list view is enough, no need for details -->
         <td>{{ supplier[2] }}</td>
         <td>
             <a href="{{ url_for('supplier.update_supplier', id=supplier[0]) }}" class="btn btn-primary">Update</a>
