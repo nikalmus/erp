@@ -5,7 +5,7 @@
         <tr>
             <th>ID</th>
             <th>Created Date</th>
-            <th>Purchase Date</th>
+            <th>Received Date</th>
             <th>Status</th>
             <th>Supplier</th>
         </tr>
@@ -46,6 +46,7 @@
         </tr>
     </table>
 
+    {% if po[3] != 'Completed' %}
     <h3>Add PO Line</h3>
     <form method="POST" action="{{ url_for('po.add_po_line', id=po[0]) }}">
         <div class="form-group">
@@ -60,8 +61,14 @@
             <label for="quantity">Quantity:</label>
             <input type="number" class="form-control" id="quantity" name="quantity">
         </div>
-        <button type="submit" class="btn btn-primary">Add</button>
+
+    <!-- <a href="{{ url_for('po.add_po_line', id=po[0]) }}" class="btn btn-primary">Add</a> -->
+    <input type="submit" class="btn btn-primary" value="Add">
+
     </form>
+    {% endif %}
+
+    
 
     {% if po[3] == 'Draft' %}
         <h3>Progress Status:</h3>

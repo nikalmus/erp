@@ -56,7 +56,7 @@ CREATE TABLE po (
   id serial PRIMARY KEY,
   supplier_id integer REFERENCES supplier (id),
   created_date timestamptz DEFAULT now(),
-  purchase_date timestamptz,
+  received_date timestamptz,
   status po_status DEFAULT 'Draft',
   CONSTRAINT valid_status CHECK (status = ANY (ARRAY['Draft'::po_status, 'Pending Approval'::po_status, 'Approved'::po_status, 'In Progress'::po_status, 'Completed'::po_status, 'Cancelled'::po_status]))
 );
@@ -74,6 +74,7 @@ CREATE TABLE po_line (
 CREATE TABLE inventory_item (
   id serial PRIMARY KEY,
   product_id integer REFERENCES product (id),
+  po_line_id integer REFERENCES po_line (id),
   serial_number varchar(255),
   location location_type
 );
@@ -87,5 +88,17 @@ CREATE TABLE stock_move (
   move_date timestamptz DEFAULT now()
 );
 
+CREATE OR REPLACE FUNCTION update_received_date()
+  RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.status = 'Completed' THEN
+    NEW.received_date := NOW();
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
-
+CREATE TRIGGER update_received_date_trigger
+  BEFORE UPDATE ON po
+  FOR EACH ROW
+  EXECUTE FUNCTION update_received_date();

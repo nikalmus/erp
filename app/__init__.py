@@ -10,6 +10,7 @@ from app.db import connect
 
 def create_app():
     app = Flask(__name__)
+    app.secret_key = 'my_secret_key_here'
     app.register_blueprint(product_bp, db_conn = connect)
     app.register_blueprint(bom_bp, db_conn = connect)
     app.register_blueprint(mo_bp, db_conn = connect)
