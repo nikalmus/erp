@@ -1,10 +1,30 @@
 /* styles.css */
 header {
-    background-color: #c6ced6; /* Replace with your desired background color */
+    background-color: #c6ced6; 
     padding: 20px;
 }
 
 header h1 {
-    color: #333; /* Replace with your desired text color */
+    color: #333; 
 }
+
+.supplier-container {
+    display: flex;
+    align-items: center;
+}
+
+.supplier-value {
+    margin-right: 10px;
+}
+
+.dropdown-container {
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-container select {
+    margin-left: 5px;
+}
+
+
 

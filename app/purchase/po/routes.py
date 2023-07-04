@@ -34,10 +34,13 @@ def get_po(id):
     cursor.execute("SELECT id, name FROM product")
     products = cursor.fetchall()
 
+    cursor.execute("SELECT id, name FROM supplier")  # Retrieve suppliers
+    suppliers = cursor.fetchall()
+
     cursor.close()
     conn.close()
 
-    return render_template('po_detail.html', po=po, po_lines=po_lines, total=total, products=products)
+    return render_template('po_detail.html', po=po, po_lines=po_lines, total=total, products=products, suppliers=suppliers)
 
 @bp.route('/purchase/pos/')
 def redirect_to_products():
@@ -152,3 +155,19 @@ def set_status(id):
     conn.close()
 
     return render_template('po_detail.html', po=po, po_lines=po_lines, total=total)
+
+@bp.route('/purchase/pos/<int:id>/update_supplier', methods=['POST'])
+def update_supplier(id):
+    supplier_id = request.form.get('supplier_id')
+
+    conn = connect()
+    cursor = conn.cursor()
+
+    # Update the supplier ID for the PO
+    cursor.execute("UPDATE po SET supplier_id = %s WHERE id = %s", (supplier_id, id))
+
+    cursor.close()
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('po.get_po', id=id))
