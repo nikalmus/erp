@@ -49,6 +49,13 @@
             <td>{{ po_line[4] }}</td>
             <td>{{ po_line[5] }}</td>
             <td>{{ po_line[5] * po_line[4] }}</td>
+            <td>
+                {% if po[3] != 'Completed' %}
+                    <form method="POST" action="{{ url_for('po.delete_po_line', po_id=po_line[1], po_line_id=po_line[0]) }}">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
         <tr>

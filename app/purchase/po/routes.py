@@ -112,6 +112,19 @@ def add_po_line(id):
 
     return redirect(url_for('po.get_po', id=id))
 
+@bp.route('/purchase/pos/<int:po_id>/delete_po_line/<int:po_line_id>', methods=['POST'])
+def delete_po_line(po_id, po_line_id):
+    if request.method == 'POST':
+        conn = connect()
+        cursor = conn.cursor()
+
+        cursor.execute("DELETE FROM po_line WHERE id = %s", (po_line_id,))
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+
+        return redirect(url_for('po.get_po', id=po_id))
 
 
 @bp.route('/purchase/pos/<int:id>/set_status', methods=['POST'])
