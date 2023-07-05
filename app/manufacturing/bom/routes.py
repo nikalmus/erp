@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, request, url_for
+from flask import Blueprint, flash, render_template, redirect, request, url_for
 from app.db import connect
 
 bp = Blueprint('bom', __name__, template_folder='templates')
@@ -83,6 +83,32 @@ def create_bom():
 
     return render_template('bom_create.html', products=products)
 
+@bp.route('/manufacturing/boms/<int:id>/delete', methods=['POST'])
+def delete_bom(id):
+    conn = connect()
+    cursor = conn.cursor()
+
+    # Check if there is an MO where this BoM is used
+    cursor.execute("SELECT * FROM mo WHERE bom_id = %s", (id,))
+    mo = cursor.fetchone()
+
+    if mo:
+        flash(f'BOM cannot be deleted because it is used in MO {mo[0]} ', 'error')
+    else:
+        # Delete the associated BoM Lines
+        cursor.execute("DELETE FROM bom_line WHERE bom_id = %s", (id,))
+
+        # Delete the BoM
+        cursor.execute("DELETE FROM bom WHERE id = %s", (id,))
+        conn.commit()
+
+        flash('BoM and associated BoM Lines deleted successfully.', 'success')
+        
+    cursor.close()
+    conn.close()
+
+    return redirect(url_for('bom.get_boms'))
+
 @bp.route('/manufacturing/boms/<int:id>/add_bom_line', methods=['POST'])
 def add_bom_line(id):
     if request.method == 'POST':
@@ -112,3 +138,17 @@ def add_bom_line(id):
         conn.close()
 
     return redirect(url_for('bom.get_bom', id=id))
+
+@bp.route('/manufacturing/boms/<int:bom_id>/delete_bom_line/<int:bom_line_id>', methods=['POST'])
+def delete_bom_line(bom_id, bom_line_id):
+    if request.method == 'POST':
+        conn = connect()
+        cursor = conn.cursor()
+
+        cursor.execute("DELETE FROM bom_line WHERE id = %s", (bom_line_id,))
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+
+        return redirect(url_for('bom.get_bom', id=bom_id))

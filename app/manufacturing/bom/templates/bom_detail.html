@@ -31,6 +31,11 @@
             <td>{{ bom_line[4] }}</td>
             <td>{{ bom_line[5] }}</td>
             <td>{{ bom_line[5] * bom_line[4] }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('bom.delete_bom_line', bom_id=bom_line[1], bom_line_id=bom_line[0]) }}">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </td>
         </tr>
         {% endfor %}
         <tr>
@@ -60,5 +65,9 @@
     <input type="submit" class="btn btn-primary" value="Add">
 
     </form>
-
+    
+    <h4>Delete BoM:</h4>
+        <form method="POST" action="{{ url_for('bom.delete_bom', id=bom[0]) }}">
+            <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
 {% endblock %}
