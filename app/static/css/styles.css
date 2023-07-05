@@ -1,4 +1,9 @@
 /* styles.css */
+
+body {
+    margin: 20px;
+}
+
 header {
     background-color: #c6ced6; 
     padding: 20px;
@@ -25,6 +30,39 @@ header h1 {
 .dropdown-container select {
     margin-left: 5px;
 }
+
+.flash-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    margin-bottom: 10px;
+    animation: flash-message-animation 3s ease-in-out;
+  }
+  
+  @keyframes flash-message-animation {
+    0% {
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  
+  .flash-message.success {
+    background-color: #d4edda !important;
+    color: #155724 !important;
+  }
+  
+  .flash-message.error {
+    background-color: #f8d7da !important;
+    color: #721c24 !important;
+  }
 
 
 

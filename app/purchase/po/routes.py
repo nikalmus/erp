@@ -80,6 +80,33 @@ def create_po():
 
     return render_template('po_create.html', suppliers=suppliers)
 
+@bp.route('/purchase/pos/<int:po_id>/delete', methods=['POST'])
+def delete_po(po_id):
+    conn = connect()
+    cursor = conn.cursor()
+
+    # Retrieve the PO's status
+    cursor.execute("SELECT status FROM po WHERE id = %s", (po_id,))
+    po_status = cursor.fetchone()[0]
+
+    # Check if the PO status is "Cancelled"
+    if po_status == 'Cancelled':
+        # Delete the associated PO Lines
+        cursor.execute("DELETE FROM po_line WHERE po_id = %s", (po_id,))
+
+        # Delete the PO
+        cursor.execute("DELETE FROM po WHERE id = %s", (po_id,))
+        conn.commit()
+
+        flash('PO and associated PO Lines deleted successfully.', 'success')
+    else:
+        flash('PO can only be deleted if its status is "Cancelled".', 'error')
+
+    cursor.close()
+    conn.close()
+
+    return redirect(url_for('po.get_pos'))
+
 
 @bp.route('/purchase/pos/<int:id>/add_po_line', methods=['POST'])
 def add_po_line(id):
@@ -105,7 +132,6 @@ def add_po_line(id):
         cursor.execute("INSERT INTO po_line (po_id, product_id, quantity) VALUES (%s, %s, %s)",
                        (id, product_id, quantity))
 
-        flash('New line added to the purchase order.', 'success')
         cursor.close()
         conn.commit()
         conn.close()

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h3>Purchase Order {{ po[0] }} Details</h3>
-    <table>
+    <h4>Purchase Order {{ po[0] }} Details</h4>
+    <table class="table table-striped table-bordered">
         <tr>
             <th>ID</th>
             <th>Created Date</th>
@@ -32,8 +32,8 @@
             </td>   
         </tr>
     </table>
-    <h3>PO Lines:</h3>
-    <table>
+    <h4>PO Lines:</h4>
+    <table class="table table-striped table-bordered">
         <tr>
             <th>ID</th>
             <th>Purchase Order ID</th>
@@ -69,7 +69,7 @@
     </table>
 
     {% if po[3] != 'Completed' %}
-    <h3>Add PO Line</h3>
+    <h4>Add PO Line</h4>
     <form method="POST" action="{{ url_for('po.add_po_line', id=po[0]) }}">
         <div class="form-group">
             <label for="product">Product:</label>
@@ -92,14 +92,15 @@
     
 
     {% if po[3] == 'Draft' %}
-        <h3>Progress Status:</h3>
+        <h4>Progress Status:</h4>
         <form method="POST" action="{{ url_for('po.set_status', id=po[0]) }}">
             <button type="submit" class="btn btn-primary" name="status" value="Pending Approval">Request Approval</button>
+            <button type="submit" class="btn btn-primary" name="status" value="Cancelled">Cancel</button>
         </form>
     {% endif %}
 
     {% if po[3] == 'Pending Approval' %}
-        <h3>Set Status:</h3>
+        <h4>Set Status:</h4>
         <form method="POST" action="{{ url_for('po.set_status', id=po[0]) }}">
             <button type="submit" class="btn btn-primary" name="status" value="Approved">Approved</button>
             <button type="submit" class="btn btn-primary" name="status" value="Cancelled">Cancel</button>
@@ -107,7 +108,7 @@
     {% endif %}
 
     {% if po[3] == 'Approved' %}
-        <h3>Set Status:</h3>
+        <h4>Set Status:</h4>
         <form method="POST" action="{{ url_for('po.set_status', id=po[0]) }}">
             <button type="submit" class="btn btn-primary" name="status" value="In Progress">In Progress</button>
             <button type="submit" class="btn btn-primary" name="status" value="Completed">Completed</button>
@@ -116,7 +117,7 @@
     {% endif %}
 
     {% if po[3] == 'In Progress' %}
-        <h3>Set Status:</h3>
+        <h4>Set Status:</h4>
         <form method="POST" action="{{ url_for('po.set_status', id=po[0]) }}">
             <button type="submit" class="btn btn-primary" name="status" value="Completed">Completed</button>
             <button type="submit" class="btn btn-primary" name="status" value="Cancelled">Cancel</button>
@@ -124,9 +125,17 @@
     {% endif %}
 
     {% if po[3] == 'Cancelled' %}
-        <h3>Set Status:</h3>
+        <h4>Set Status:</h4>
         <form method="POST" action="{{ url_for('po.set_status', id=po[0]) }}">
             <button type="submit" class="btn btn-primary" name="status" value="Draft">Draft</button>
+        </form>
+    {% endif %}
+
+
+    {% if po[3] == 'Cancelled' %}
+        <h4>Delete Purchase Order:</h4>
+        <form method="POST" action="{{ url_for('po.delete_po', po_id=po[0]) }}">
+            <button type="submit" class="btn btn-danger">Delete</button>
         </form>
     {% endif %}
 

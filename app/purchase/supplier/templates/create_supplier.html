@@ -1,15 +1,21 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h3>{% if supplier %}Update Supplier{% else %}Create New Supplier{% endif %}</h3>
-    <form method="POST" action="{% if supplier %}{{ url_for('supplier.update_supplier', id=supplier[0]) }}{% else %}{{ url_for('supplier.create_supplier') }}{% endif %}">
-        <div class="form-group">
-            <label for="name">Name:</label>
-            <input type="text" class="form-control" id="name" name="name" value="{% if supplier %}{{ supplier[1] }}{% endif %}">
+    <h4>{% if supplier %}Update Supplier{% else %}Create New Supplier{% endif %}</h4>
+    <form>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="name" class="form-label">Name:</label>
+                <input type="text" class="form-control" id="name" name="name" value="{% if supplier %}{{ supplier[1] }}{% endif %}">
+            </div>
+            <div class="col-md-6">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" class="form-control" id="email" name="email" value="{% if supplier %}{{ supplier[2] }}{% endif %}">
+            </div>
         </div>
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" class="form-control" id="email" name="email" value="{% if supplier %}{{ supplier[2] }}{% endif %}">
+        <div class="row">
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-primary">{% if supplier %}Update{% else %}Create{% endif %}</button>
+            </div>
         </div>
-        <input type="submit" class="btn btn-primary" value="{% if supplier %}Update{% else %}Create{% endif %}">
     </form>
 {% endblock %}
