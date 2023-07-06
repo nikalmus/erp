@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h4>{% if product %}Update Product{% else %}Create New Product{% endif %}</h4>
+    <form method="POST" action="{% if product %}{{ url_for('products.update_product', id=product[0]) }}
+                                {% else %}{{ url_for('products.create_product') }}{% endif %}">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="name" class="form-label">Name:</label>
+                <input type="text" class="form-control" 
+                                   id="name" 
+                                   name="name" 
+                                   value="{% if product %}{{ product[1] }}{% endif %}">
+            </div>
+            <div class="col-md-6">
+                <label for="description" class="form-label">Description:</label>
+                <input type="text" class="form-control" 
+                                   id="description" 
+                                   name="description" 
+                                   value="{% if product %}{{ product[2] }}{% endif %}">
+            </div>
+            <div class="col-md-6">
+                <label for="price" class="form-label">Price:</label>
+                <input type="text" class="form-control" 
+                                   id="price" 
+                                   name="price" 
+                                   value="{% if product %}{{ product[3] }}{% endif %}">
+            </div>
+            <div class="col-md-6">
+                <label for="is_assembly" class="form-label">Is Assembly:</label>
+                <select class="form-select" id="is_assembly" name="is_assembly">
+                    <option value="true" {% if product and product[4] == True %}selected{% endif %}>True</option>
+                    <option value="false" {% if not product or product[4] == False %}selected{% endif %}>False</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-primary">{% if product %}Update{% else %}Create{% endif %}</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

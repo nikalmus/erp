@@ -15,6 +15,12 @@
             <td>{{ product[2] }}</td>
             <td>{{ product[3] }}</td>
             <td>{{ product[4] }}</td>
+            <td>
+                <a href="{{ url_for('products.update_product', id=product[0]) }}" class="btn btn-primary">Update</a>
+                <form method="POST" action="{{ url_for('products.delete_product', id=product[0]) }}" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </td>
         </tr>
     </table>
     {% endblock %}
