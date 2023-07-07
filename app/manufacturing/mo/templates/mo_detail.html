@@ -25,6 +25,7 @@
             <th>Component Name</th>
             <th>Quantity</th>
             <th>Available</th>
+            <th>Reserved</th>
             <th>Unit Price</th>
             <th>Cost</th>
         </tr>
@@ -34,14 +35,8 @@
             <td><a href="/manufacturing/products/{{ bom_line[2] }}">{{ bom_line[2] }}</a></td>
             <td>{{ bom_line[3] }}</td>
             <td>{{ bom_line[4] }}</td>
-            <td>
-                {% if bom_line[6] <= bom_line[4] %}
-                  {{ bom_line[6] }} / {{ bom_line[4] }}
-                {% else %}
-                  {{ bom_line[4] }} / {{ bom_line[4] }}
-                {% endif %}
-              </td>
-              
+            <td>{{ bom_line[6] }}</td>
+            <td>{{ bom_line[7] or 0 }}</td>  <!-- Display 0 if Reserved is not set -->
             <td>{{ bom_line[5] }}</td>
             <td>{{ bom_line[5] * bom_line[4] }}</td>
         </tr>
@@ -64,6 +59,9 @@
         {% elif mo[4] == 'Pending' %}
             <button type="submit" class="btn btn-primary" name="status" value="In Progress">Mark as In Progress</button>
             <button type="submit" class="btn btn-primary" name="status" value="Cancelled">Mark as Cancelled</button>
+        {% elif mo[4] == 'Reserved' %}
+            <button type="submit" class="btn btn-primary" name="status" value="In Progress">Mark as In Progress</button>
+            <button type="submit" class="btn btn-primary" name="status" value="Cancelled">Mark as Cancelled</button>
         {% elif mo[4] == 'In Progress' %}
             <button type="submit" class="btn btn-primary" name="status" value="Completed">Mark as Completed</button>
             <button type="submit" class="btn btn-primary" name="status" value="Cancelled">Mark as Cancelled</button>
@@ -81,14 +79,13 @@
         {% endif %}
     {% endfor %}
 
-   {% if lines_to_reserve %}
-    <button type="submit" class="btn btn-primary" name="status" value="Reserved">Reserve components</button>
-   {% endif %}
+
+    {% if lines_to_reserve %}
+    <form method="POST" action="{{ url_for('mo.get_mo', id=mo[0]) }}">
+        <button type="submit" class="btn btn-primary" name="status" value="Reserved">Reserve components</button>
+    </form>
+    {% endif %}
     
-
-
-
-
     {% if mo[4] == 'Cancelled' %}
         <h5>Delete Manufacturing Order:</h5>
         <form method="POST" action="{{ url_for('mo.delete_mo', id=mo[0]) }}">
