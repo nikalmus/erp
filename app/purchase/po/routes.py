@@ -15,8 +15,44 @@ def get_pos():
 
     return render_template('po_list.html', pos=pos)
 
-@bp.route('/purchase/pos/<int:id>', methods=['GET'])
+@bp.route('/purchase/pos/<int:id>', methods=['GET', 'POST'])
 def get_po(id):
+    if request.method == 'POST':
+        status = request.form.get('status')
+
+        conn = connect()
+        cursor = conn.cursor()
+
+        # Update the PO status
+        cursor.execute("UPDATE po SET status = %s WHERE id = %s", (status, id))
+
+        # Retrieve the updated PO information
+        cursor.execute("SELECT id, created_date, received_date, status, supplier_id FROM po WHERE id = %s", (id,))
+        po_status = cursor.fetchone()[3]
+        
+        if po_status == "Completed":
+            # Retrieve the PO lines
+            cursor.execute("SELECT po_line.id, po_line.po_id, po_line.product_id, \
+                   product.name, po_line.quantity, product.price \
+                   FROM po_line JOIN product ON po_line.product_id = product.id \
+                   WHERE po_line.po_id = %s", (id,))
+            po_lines = cursor.fetchall()
+            for po_line in po_lines:
+                product_id = po_line[2]
+                quantity = po_line[4]
+
+                # Iterate over the quantity
+                for _ in range(quantity):
+                    # Create inventory_item record for each item
+                    cursor.execute("INSERT INTO inventory_item (product_id, serial_number, location, po_line_id) \
+                                   VALUES (%s, uuid_generate_v4(), 'Warehouse', %s) RETURNING id", (product_id, po_line[0]))
+                    inventory_item_id = cursor.fetchone()[0]
+                    cursor.execute("INSERT INTO stock_move (inventory_item_id, source_location, destination_location, move_date) \
+                                   VALUES (%s, 'Customer', 'Warehouse', now())", (inventory_item_id,))
+        conn.commit()      
+        cursor.close()
+        conn.close()
+                    
     conn = connect()
     cursor = conn.cursor()
 
@@ -153,47 +189,47 @@ def delete_po_line(po_id, po_line_id):
         return redirect(url_for('po.get_po', id=po_id))
 
 
-@bp.route('/purchase/pos/<int:id>/set_status', methods=['POST'])
-def set_status(id):
-    status = request.form.get('status')
+# @bp.route('/purchase/pos/<int:id>/set_status', methods=['POST'])
+# def set_status(id):
+#     status = request.form.get('status')
 
-    conn = connect()
-    cursor = conn.cursor()
+#     conn = connect()
+#     cursor = conn.cursor()
 
-    # Update the PO status
-    cursor.execute("UPDATE po SET status = %s WHERE id = %s", (status, id))
+#     # Update the PO status
+#     cursor.execute("UPDATE po SET status = %s WHERE id = %s", (status, id))
 
-    # Retrieve the updated PO information
-    cursor.execute("SELECT id, created_date, received_date, status, supplier_id FROM po WHERE id = %s", (id,))
-    po = cursor.fetchone()
+#     # Retrieve the updated PO information
+#     cursor.execute("SELECT id, created_date, received_date, status, supplier_id FROM po WHERE id = %s", (id,))
+#     po = cursor.fetchone()
 
-    # Retrieve the PO lines
-    cursor.execute("SELECT po_line.id, po_line.po_id, po_line.product_id, \
-                   product.name, po_line.quantity, product.price \
-                   FROM po_line JOIN product ON po_line.product_id = product.id \
-                   WHERE po_line.po_id = %s", (id,))
-    po_lines = cursor.fetchall()
+#     # Retrieve the PO lines
+#     cursor.execute("SELECT po_line.id, po_line.po_id, po_line.product_id, \
+#                    product.name, po_line.quantity, product.price \
+#                    FROM po_line JOIN product ON po_line.product_id = product.id \
+#                    WHERE po_line.po_id = %s", (id,))
+#     po_lines = cursor.fetchall()
 
-    # Calculate the total
-    total = sum(po_line[5] * po_line[4] for po_line in po_lines)
+#     # Calculate the total
+#     total = sum(po_line[5] * po_line[4] for po_line in po_lines)
 
-    if status == "Completed":
-        for po_line in po_lines:
-            product_id = po_line[2]
-            quantity = po_line[4]
+#     if status == "Completed":
+#         for po_line in po_lines:
+#             product_id = po_line[2]
+#             quantity = po_line[4]
 
-            # Iterate over the quantity
-            for _ in range(quantity):
-                # Create inventory_item record for each item
-                cursor.execute("INSERT INTO inventory_item (product_id, serial_number, location, po_line_id) VALUES (%s, uuid_generate_v4(), 'Warehouse', %s) RETURNING id", (product_id, po_line[0]))
-                inventory_item_id = cursor.fetchone()[0]
-                cursor.execute("INSERT INTO stock_move (inventory_item_id, source_location, destination_location, move_date) VALUES (%s, 'Customer', 'Warehouse', now())", (inventory_item_id,))
+#             # Iterate over the quantity
+#             for _ in range(quantity):
+#                 # Create inventory_item record for each item
+#                 cursor.execute("INSERT INTO inventory_item (product_id, serial_number, location, po_line_id) VALUES (%s, uuid_generate_v4(), 'Warehouse', %s) RETURNING id", (product_id, po_line[0]))
+#                 inventory_item_id = cursor.fetchone()[0]
+#                 cursor.execute("INSERT INTO stock_move (inventory_item_id, source_location, destination_location, move_date) VALUES (%s, 'Customer', 'Warehouse', now())", (inventory_item_id,))
 
-    cursor.close()
-    conn.commit()
-    conn.close()
+#     cursor.close()
+#     conn.commit()
+#     conn.close()
 
-    return render_template('po_detail.html', po=po, po_lines=po_lines, total=total)
+#     return render_template('po_detail.html', po=po, po_lines=po_lines, total=total)
 
 @bp.route('/purchase/pos/<int:id>/update_supplier', methods=['POST'])
 def update_supplier(id):
