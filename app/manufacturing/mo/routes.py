@@ -23,6 +23,7 @@ def get_mos():
 
     return render_template('mo_list.html', mos=mos)
 
+
 @bp.route('/manufacturing/mos/<int:id>', methods=['GET', 'POST'])
 def get_mo(id):
     if request.method == 'POST':

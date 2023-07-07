@@ -31,7 +31,7 @@ CREATE TABLE mo (
   date_done timestamptz,
   bom_id integer REFERENCES bom (id),
   status mo_status DEFAULT 'Draft'::mo_status,
-  CONSTRAINT valid_status CHECK (status = ANY (ARRAY['Draft'::mo_status, 'Pending'::mo_status, 'In Progress'::mo_status, 'Completed'::mo_status, 'Cancelled'::mo_status]))
+  CONSTRAINT valid_status CHECK (status = ANY (ARRAY['Draft'::mo_status, 'Pending'::mo_status, 'Reserved'::mo_status, 'In Progress'::mo_status, 'Completed'::mo_status, 'Cancelled'::mo_status]))
 );
 
 
