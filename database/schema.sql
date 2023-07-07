@@ -22,21 +22,18 @@ CREATE TABLE bom_line (
 );
 
 -- Define the mo_status enum 
-CREATE TYPE mo_status AS ENUM ('Pending', 'In Progress', 'Completed', 'Cancelled');
+CREATE TYPE mo_status AS ENUM ('Draft', 'Pending', 'In Progress', 'Completed', 'Cancelled');
 
 -- Create the mo table
 CREATE TABLE mo (
   id serial PRIMARY KEY,
-  description text,
   date_created timestamptz DEFAULT now(),
   date_done timestamptz,
   bom_id integer REFERENCES bom (id),
-  status mo_status,
-  CONSTRAINT date_created_read_only CHECK (date_created = DEFAULT)
+  status mo_status DEFAULT 'Draft'::mo_status,
+  CONSTRAINT valid_status CHECK (status = ANY (ARRAY['Draft'::mo_status, 'Pending'::mo_status, 'In Progress'::mo_status, 'Completed'::mo_status, 'Cancelled'::mo_status]))
 );
 
--- Add a check constraint for valid status values in mo table
-ALTER TABLE mo ADD CONSTRAINT valid_status CHECK (status = ANY (ARRAY['Pending'::mo_status, 'In Progress'::mo_status, 'Completed'::mo_status, 'Cancelled'::mo_status]));
 
 -- Define the location_type enum 
 CREATE TYPE location_type AS ENUM ('Warehouse', 'Factory', 'Repair' );
