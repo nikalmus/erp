@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2>Manufacturing</h2>
+    <ul>
+        <li><a href="{{ url_for('bom.get_boms') }}">BoMs</a></li>
+        <li><a href="{{ url_for('mo.get_mos') }}">MOs</a></li>
+        <li><a href="{{ url_for('products.get_products') }}">Products</a></li>
+    </ul>
+{% endblock %}
