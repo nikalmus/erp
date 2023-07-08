@@ -38,7 +38,6 @@ def get_mo(id):
             bom_lines = session.get('bom_lines', [])
             print("BOM Lines inside POST:", bom_lines)
             for bom_line in bom_lines:
-                reserved_quantity = 0
                 print("BOM Line :", bom_line)
                 component_id = bom_line[2]
                 quantity = bom_line[4]
@@ -52,8 +51,10 @@ def get_mo(id):
                                 AND location = 'Warehouse' \
                                 AND id IN (SELECT id FROM inventory_item WHERE product_id = %s AND location = 'Warehouse' LIMIT %s)",
                                 (mo_id, component_id, component_id, quantity))
-
+                
+                flash(f'{quantity} items were reserved successfully.', 'success')
                 conn.commit()
+
                 # Retrieve the updated inventory_item_ids after the update query
                 cursor.execute(
                     "SELECT id FROM inventory_item \
@@ -74,6 +75,27 @@ def get_mo(id):
 
                 conn.commit()
 
+        if status == 'Cancelled':
+            # Check if MO was reserved before cancellation
+            cursor.execute("SELECT bom_id FROM mo WHERE id = %s", (id,))
+            bom_id = cursor.fetchone()[0]
+
+            cursor.execute("SELECT COUNT(*) FROM inventory_item WHERE location = 'Factory' AND mo_id = %s", (id,))
+            reserved_count = cursor.fetchone()[0]
+
+            if bom_id is not None and reserved_count > 0:
+                # Create reverse stock moves for the cancelled MO
+                cursor.execute("INSERT INTO stock_move (inventory_item_id, source_location, destination_location, move_date) \
+                        SELECT id, 'Factory', 'Warehouse', now() \
+                        FROM inventory_item \
+                        WHERE location = 'Factory' AND mo_id = %s", (id,))
+                conn.commit()
+
+                # Update inventory items reserved for the cancelled MO
+                cursor.execute("UPDATE inventory_item SET location = 'Warehouse', mo_id = NULL WHERE location = 'Factory' AND mo_id = %s", (id,))
+                conn.commit()
+                flash(f'{reserved_count} items were unreserved successfully.', 'success')
+        
         cursor.close()
         conn.close()
 
@@ -90,15 +112,6 @@ def get_mo(id):
     mo = cursor.fetchone()
     
     session['mo'] = mo
-
-    # cursor.execute("SELECT bom_line.id, bom_line.bom_id, bom_line.component_id, product.name, \
-    #                 bom_line.quantity, product.price, \
-    #                 (SELECT COUNT(*) FROM inventory_item \
-    #                  WHERE product_id = bom_line.component_id \
-    #                  AND location = 'Warehouse') AS available_count \
-    #                 FROM bom_line \
-    #                 JOIN product ON bom_line.component_id = product.id \
-    #                 WHERE bom_line.bom_id = %s", (mo[3],))
 
     cursor.execute("""
         SELECT bom_line.id, bom_line.bom_id, bom_line.component_id, product.name,
