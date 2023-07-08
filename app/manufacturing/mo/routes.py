@@ -123,10 +123,10 @@ def get_mo(id):
         FROM bom_line
         JOIN product ON bom_line.component_id = product.id
         LEFT JOIN inventory_item ON bom_line.component_id = inventory_item.product_id
-            AND inventory_item.mo_id IS NOT NULL
+            AND inventory_item.mo_id = %s
         WHERE bom_line.bom_id = %s
         GROUP BY bom_line.id, bom_line.bom_id, bom_line.component_id, product.name, bom_line.quantity, product.price
-    """, (mo[3],))
+    """, (mo[0], mo[3]))
 
     bom_lines = cursor.fetchall()
     
