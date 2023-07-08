@@ -55,16 +55,16 @@
     <form method="POST" action="{{ url_for('mo.get_mo', id=mo[0]) }}">
         {% if mo[4] == 'Draft' %}
             <button type="submit" class="btn btn-primary" name="status" value="Pending">Mark as Pending</button>
-            <button type="submit" class="btn btn-primary" name="status" value="Cancelled">Mark as Cancelled</button>
+            <button type="submit" class="btn btn-primary" name="status" value="Cancelled">Cancel</button>
         {% elif mo[4] == 'Pending' %}
             <button type="submit" class="btn btn-primary" name="status" value="In Progress">Mark as In Progress</button>
-            <button type="submit" class="btn btn-primary" name="status" value="Cancelled">Mark as Cancelled</button>
+            <button type="submit" class="btn btn-primary" name="status" value="Cancelled">Cancel</button>
         {% elif mo[4] == 'Reserved' %}
             <button type="submit" class="btn btn-primary" name="status" value="In Progress">Mark as In Progress</button>
-            <button type="submit" class="btn btn-primary" name="status" value="Cancelled">Mark as Cancelled</button>
+            <button type="submit" class="btn btn-primary" name="status" value="Cancelled">Cancel</button>
         {% elif mo[4] == 'In Progress' %}
             <button type="submit" class="btn btn-primary" name="status" value="Completed">Mark as Completed</button>
-            <button type="submit" class="btn btn-primary" name="status" value="Cancelled">Mark as Cancelled</button>
+            <button type="submit" class="btn btn-primary" name="status" value="Cancelled">Cancel</button>
         {% elif mo[4] == 'Cancelled' %}
             <button type="submit" class="btn btn-primary" name="status" value="Draft">Mark As Draft</button>
         {% endif %}
@@ -87,9 +87,11 @@
     {% endfor %}
 
 {% if mo[4] in ['Draft', 'Pending'] and all_lines_meet_criteria and lines_to_reserve|length == bom_lines|length %}
-    <form method="POST" action="{{ url_for('mo.get_mo', id=mo[0]) }}">
-        <button type="submit" class="btn btn-primary" name="status" value="Reserved">Reserve components</button>
-    </form>
+    <div class="mt-3">  
+        <form method="POST" action="{{ url_for('mo.get_mo', id=mo[0]) }}">
+            <button type="submit" class="btn btn-primary" name="status" value="Reserved">Reserve components</button>
+        </form>
+    </div>
 {% endif %}
 
 
