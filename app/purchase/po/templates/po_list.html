@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<h4>Purchase Orders</h4>
+<div class="mt-3">
+    <a href="{{ url_for('po.create_po') }}" class="btn btn-primary">New</a>
+</div>
+<table class="table table-striped table-bordered">
+    <tr>
+        <th>ID</th>
+        <th>Received Date</th>
+        <th>Created Date</th>
+        <th>Status</th>
+        <th>Supplier</th>
+    </tr>
+    {% for po in pos %}
+    <tr>
+        <td><a href="{{ url_for('po.get_po', id=po[0]) }}">{{ po[0] }}</a></td>
+        <td>{{ po[1].strftime('%Y-%m-%d %H:%M') if po[1] else '' }}</td>
+        <td>{{ po[2].strftime('%Y-%m-%d %H:%M') if po[2] else '' }}</td>
+        <td>{{ po[3] }}</td>
+        <td><a href="/purchase/suppliers/{{ po[4] }}">{{ po[4] }}</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
+

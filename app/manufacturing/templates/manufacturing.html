@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h4>Manufacturing</h4>
+    <a href="{{ url_for('manufacturing.manufacturing_home') }}">
+        <img src="{{ url_for('static', filename='images/manufacturing200.png') }}" alt="Inventory">
+    </a>
+    <ul>
+        <li><a href="{{ url_for('bom.get_boms') }}">BoMs</a></li>
+        <li><a href="{{ url_for('mo.get_mos') }}">MOs</a></li>
+        <li><a href="{{ url_for('products.get_products') }}">Products</a></li>
+    </ul>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<h4>Create Bill of Materials</h4>
+<form method="POST" action="{{ url_for('bom.create_bom') }}">
+    <div class="form-group">
+        <label for="supplier">Product:</label>
+        <select class="form-control" id="supplier" name="product_id">
+            {% for product in products %}
+                <option value="{{ product[0] }}">{{ product[1] }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">Create BOM</button>
+</form>
+{% endblock %}

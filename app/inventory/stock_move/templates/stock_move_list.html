@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<h4>Stock Moves</h4>
+<table class="table table-striped table-bordered">
+    <tr>
+        <th>ID</th>
+        <th>Inventory Item</th>
+        <th>Soruce Location</th>
+        <th>Destination Location</th>
+
+    </tr>
+    {% for stock_move in stock_moves %}
+    <tr>
+        <td><a href="{{ url_for('stock_move.get_stock_move', id=stock_move[0]) }}">{{ stock_move[0] }}</a></td>
+        <td><a href="/inventory/stock_moves/{{ stock_move[1] }}">{{ stock_move[1] }}</a></td>
+        <td>{{ stock_move[2] }}</td>
+        <td>{{ stock_move[3] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

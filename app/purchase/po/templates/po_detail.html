@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h4>Purchase Order {{ po[0] }} Details</h4>
+    <table class="table table-striped table-bordered">
+        <tr>
+            <th>ID</th>
+            <th>Created Date</th>
+            <th>Received Date</th>
+            <th>Status</th>
+            <th>Supplier</th>
+        </tr>
+        <tr>
+            <td>{{ po[0] }}</td>
+            <td>{{ po[1].strftime('%Y-%m-%d %H:%M') if po[1] else '' }}</td>
+            <td>{{ po[2].strftime('%Y-%m-%d %H:%M') if po[2] else '' }}</td>
+            <td>{{ po[3] }}</td>
+            <td>
+                <div class="supplier-container">
+                    <span class="supplier-value">
+                        <a href="/purchase/suppliers/{{ po[4] }}">{{ po[4] }}</a>
+                    </span>
+                    <form method="POST" action="{{ url_for('po.update_supplier', id=po[0]) }}">
+                        <div class="dropdown-container">
+                            <select name="supplier_id" onchange="this.form.submit()">
+                                {% for supplier in suppliers %}
+                                    <option value="{{ supplier[0] }}" {% if supplier[0] == po[4] %}selected{% endif %}>{{ supplier[1] }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </form>
+                </div>
+            </td>   
+        </tr>
+    </table>
+    <h4>PO Lines:</h4>
+    <table class="table table-striped table-bordered">
+        <tr>
+            <th>ID</th>
+            <th>Purchase Order ID</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>Cost</th>
+        </tr>
+        {% for po_line in po_lines %}
+        <tr>
+            <td>{{ po_line[0] }}</td>
+            <td><a href="/manufacturing/products/{{ po_line[2] }}">{{ po_line[3] }}</a></td>
+            <td>{{ po_line[4] }}</td>
+            <td>{{ po_line[5] }}</td>
+            <td>{{ po_line[5] * po_line[4] }}</td>
+            <td>
+                {% if po[3] != 'Completed' %}
+                    <form method="POST" action="{{ url_for('po.delete_po_line', po_id=po_line[1], po_line_id=po_line[0]) }}">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><strong>Total: {{ total }}</strong></td>
+        </tr>
+    </table>
+
+    {% if po[3] != 'Completed' %}
+    <h4>Add PO Line</h4>
+    <form method="POST" action="{{ url_for('po.add_po_line', id=po[0]) }}">
+        <div class="form-group">
+            <label for="product">Product:</label>
+            <select class="form-control" id="product" name="product_id">
+                {% for product in products %}
+                    <option value="{{ product[0] }}">{{ product[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="quantity">Quantity:</label>
+            <input type="number" class="form-control" id="quantity" name="quantity">
+        </div>
+
+    <input type="submit" class="btn btn-primary" value="Add">
+
+    </form>
+    {% endif %}
+
+    
+
+    {% if po[3] == 'Draft' %}
+        <h4>Progress Status:</h4>
+        <form method="POST" action="{{ url_for('po.get_po', id=po[0]) }}">
+            <button type="submit" class="btn btn-primary" name="status" value="Pending Approval">Request Approval</button>
+            <button type="submit" class="btn btn-primary" name="status" value="Cancelled">Cancel</button>
+        </form>
+    {% endif %}
+
+    {% if po[3] == 'Pending Approval' %}
+        <h4>Set Status:</h4>
+        <form method="POST" action="{{ url_for('po.get_po', id=po[0]) }}">
+            <button type="submit" class="btn btn-primary" name="status" value="Approved">Mark as Approved</button>
+            <button type="submit" class="btn btn-primary" name="status" value="Cancelled">Cancel</button>
+        </form>
+    {% endif %}
+
+    {% if po[3] == 'Approved' %}
+        <h4>Set Status:</h4>
+        <form method="POST" action="{{ url_for('po.get_po', id=po[0]) }}">
+            <button type="submit" class="btn btn-primary" name="status" value="In Progress">Mark as In Progress</button>
+            <button type="submit" class="btn btn-primary" name="status" value="Completed">Mark as Completed</button>
+            <button type="submit" class="btn btn-primary" name="status" value="Cancelled">Cancel</button>
+        </form>
+    {% endif %}
+
+    {% if po[3] == 'In Progress' %}
+        <h4>Set Status:</h4>
+        <form method="POST" action="{{ url_for('po.get_po', id=po[0]) }}">
+            <button type="submit" class="btn btn-primary" name="status" value="Completed">Mark as Completed</button>
+            <button type="submit" class="btn btn-primary" name="status" value="Cancelled">Cancel</button>
+        </form>
+    {% endif %}
+
+    {% if po[3] == 'Cancelled' %}
+        <h4>Set Status:</h4>
+        <form method="POST" action="{{ url_for('po.get_po', id=po[0]) }}">
+            <button type="submit" class="btn btn-primary" name="status" value="Draft">Draft</button>
+        </form>
+    {% endif %}
+
+
+    {% if po[3] == 'Cancelled' %}
+        <h4>Delete Purchase Order:</h4>
+        <form method="POST" action="{{ url_for('po.delete_po', po_id=po[0]) }}">
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+    {% endif %}
+
+{% endblock %}

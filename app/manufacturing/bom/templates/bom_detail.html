@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h4>{{ bom[2] }} BoM</h4>
+    <table class="table table-striped table-bordered">
+        <tr>
+            <th>ID</th>
+            <th>Product ID</th>
+            <th>Product Name</th>
+        </tr>
+        <tr>
+            <td>{{ bom[0] }}</td>
+            <td><a href="/manufacturing/products/{{ bom[1] }}">{{ bom[1] }}</a></td>
+            <td>{{ bom[2] }}</td>
+        </tr>
+    </table>
+    <h4>BoM Lines:</h4>
+    <table class="table table-striped table-bordered">
+        <tr>
+            <th>ID</th>
+            <th>Component ID</th>
+            <th>Component Name</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>Cost</th>
+        </tr>
+        {% for bom_line in bom_lines %}
+        <tr>
+            <td>{{ bom_line[0] }}</td>
+            <td><a href="/manufacturing/products/{{ bom_line[2] }}">{{ bom_line[2] }}</a></td>
+            <td>{{ bom_line[3] }}</td>
+            <td>{{ bom_line[4] }}</td>
+            <td>{{ bom_line[5] }}</td>
+            <td>{{ bom_line[5] * bom_line[4] }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('bom.delete_bom_line', bom_id=bom_line[1], bom_line_id=bom_line[0]) }}">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><strong>Total: {{ components_cost }}</strong></td>
+        </tr>
+    </table>
+    <h4>Add BoM Line</h4>
+    <form method="POST" action="{{ url_for('bom.add_bom_line', id=bom[0]) }}">
+        <div class="form-group">
+            <label for="component">Component:</label>
+            <select class="form-control" id="component" name="component_id">
+                {% for product in products %}
+                    <option value="{{ product[0] }}">{{ product[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="quantity">Quantity:</label>
+            <input type="number" class="form-control" id="quantity" name="quantity">
+        </div>
+
+    <input type="submit" class="btn btn-primary" value="Add">
+
+    </form>
+    
+    <h4>Delete BoM:</h4>
+        <form method="POST" action="{{ url_for('bom.delete_bom', id=bom[0]) }}">
+            <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+{% endblock %}

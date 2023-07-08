@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<h4>Create Purchase Order</h4>
+<form method="POST" action="{{ url_for('po.create_po') }}">
+    <div class="form-group">
+        <label for="supplier">Supplier:</label>
+        <select class="form-control" id="supplier" name="supplier_id">
+            {% for supplier in suppliers %}
+                <option value="{{ supplier[0] }}">{{ supplier[1] }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">Create PO</button>
+</form>
+{% endblock %}
+

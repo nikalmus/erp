@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h4>Supplier {{ supplier[1] }} Details</h4>
+    <table class="table table-striped table-bordered">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+        </tr>
+        <tr>
+            <td>{{ supplier[0] }}</td>
+            <td>{{ supplier[1] }}</td>
+            <td>{{ supplier[2] }}</td>
+        </tr>
+    </table>
+    {% endblock %}

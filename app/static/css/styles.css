@@ -1,0 +1,112 @@
+/* styles.css */
+
+body {
+    margin: 20px;
+}
+
+header {
+    background-color: #c6ced6; 
+    margin-bottom: 10px;
+}
+
+header h2 {
+    color: #333; 
+    margin-left: 10px;
+}
+
+/* Remove underline from all links */
+a {
+  text-decoration: none;
+}
+
+/* Remove bullet points from unordered lists */
+ul li {
+  list-style-type: none;
+}
+
+.supplier-container {
+    display: flex;
+    align-items: center;
+}
+
+.supplier-value {
+    margin-right: 10px;
+}
+
+.dropdown-container {
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-container select {
+    margin-left: 5px;
+}
+
+.flash-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    margin-bottom: 10px;
+    animation: flash-message-animation 3s ease-in-out;
+  }
+  
+  @keyframes flash-message-animation {
+    0% {
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  
+header .banner-content {
+    display: flex;
+    align-items: center;
+}
+
+header .banner-content img {
+    width: 100px;
+    height: auto; /* Preserve aspect ratio */
+}
+
+
+.flash-message.success {
+    background-color: #d4edda !important;
+    color: #155724 !important;
+  }
+  
+.flash-message.error {
+    background-color: #f8d7da !important;
+    color: #721c24 !important;
+  }
+
+.icon-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.icon-wrapper a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.icon-wrapper a img {
+    width: 200px; /* Adjust the width as needed */
+}
+
+.icon-wrapper a span {
+    margin-top: 5px;
+}
+
+
+

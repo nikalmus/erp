@@ -1,0 +1,1 @@
+from app.inventory.stock_move import routes

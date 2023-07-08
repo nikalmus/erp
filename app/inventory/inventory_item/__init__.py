@@ -1,0 +1,1 @@
+from app.inventory.inventory_item import routes
