@@ -108,5 +108,11 @@ header .banner-content img {
     margin-top: 5px;
 }
 
+footer{
+  margin-top: 100px;
+}
 
-
+footer .description {
+  font-size: 80%; 
+  color: #888888; 
+}
