@@ -32,10 +32,13 @@ def get_mo(id):
         cursor.execute("UPDATE mo SET status = %s WHERE id = %s", (status, id))
         conn.commit()
         if status == 'Reserved':
+            mo = session.get('mo')
+            if mo:
+                mo_id = mo[0]
             bom_lines = session.get('bom_lines', [])
             print("BOM Lines inside POST:", bom_lines)
             for bom_line in bom_lines:
-                
+                reserved_quantity = 0
                 print("BOM Line :", bom_line)
                 component_id = bom_line[2]
                 quantity = bom_line[4]
@@ -44,15 +47,12 @@ def get_mo(id):
                 print("Quantity:", quantity)
 
                 cursor.execute("UPDATE inventory_item \
-                                SET location = 'Factory' \
+                                SET location = 'Factory', mo_id = %s\
                                 WHERE product_id = %s \
                                 AND location = 'Warehouse' \
                                 AND id IN (SELECT id FROM inventory_item WHERE product_id = %s AND location = 'Warehouse' LIMIT %s)",
-                                (component_id, component_id, quantity))
+                                (mo_id, component_id, component_id, quantity))
 
-                # Get the number of rows updated
-                reserved_quantity = cursor.rowcount
-                #breakpoint()
                 conn.commit()
                 # Retrieve the updated inventory_item_ids after the update query
                 cursor.execute(
@@ -74,11 +74,6 @@ def get_mo(id):
 
                 conn.commit()
 
-                # Update the bom_line tuple with the reserved quantity
-                bom_line += (reserved_quantity,)
-                print(f"BOM LINE AFTER RESERVED QTY: {bom_line}")
-                session['bom_lines'] = bom_lines
-
         cursor.close()
         conn.close()
 
@@ -93,15 +88,32 @@ def get_mo(id):
                     WHERE mo.id = %s", (id,))
 
     mo = cursor.fetchone()
+    
+    session['mo'] = mo
 
-    cursor.execute("SELECT bom_line.id, bom_line.bom_id, bom_line.component_id, product.name, \
-                    bom_line.quantity, product.price, \
-                    (SELECT COUNT(*) FROM inventory_item \
-                     WHERE product_id = bom_line.component_id \
-                     AND location = 'Warehouse') AS available_count \
-                    FROM bom_line \
-                    JOIN product ON bom_line.component_id = product.id \
-                    WHERE bom_line.bom_id = %s", (mo[3],))
+    # cursor.execute("SELECT bom_line.id, bom_line.bom_id, bom_line.component_id, product.name, \
+    #                 bom_line.quantity, product.price, \
+    #                 (SELECT COUNT(*) FROM inventory_item \
+    #                  WHERE product_id = bom_line.component_id \
+    #                  AND location = 'Warehouse') AS available_count \
+    #                 FROM bom_line \
+    #                 JOIN product ON bom_line.component_id = product.id \
+    #                 WHERE bom_line.bom_id = %s", (mo[3],))
+
+    cursor.execute("""
+        SELECT bom_line.id, bom_line.bom_id, bom_line.component_id, product.name,
+        bom_line.quantity, product.price,
+        (SELECT COUNT(*) FROM inventory_item
+         WHERE product_id = bom_line.component_id
+         AND location = 'Warehouse') AS available_count,
+        COUNT(inventory_item.id) AS reserved_item_count
+        FROM bom_line
+        JOIN product ON bom_line.component_id = product.id
+        LEFT JOIN inventory_item ON bom_line.component_id = inventory_item.product_id
+            AND inventory_item.mo_id IS NOT NULL
+        WHERE bom_line.bom_id = %s
+        GROUP BY bom_line.id, bom_line.bom_id, bom_line.component_id, product.name, bom_line.quantity, product.price
+    """, (mo[3],))
 
     bom_lines = cursor.fetchall()
     

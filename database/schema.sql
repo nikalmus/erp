@@ -73,7 +73,8 @@ CREATE TABLE inventory_item (
   product_id integer REFERENCES product (id),
   po_line_id integer REFERENCES po_line (id),
   serial_number varchar(255),
-  location location_type
+  location location_type,
+  mo_id integer REFERENCES mo (id)
 );
 
 -- Create the stock_move table
