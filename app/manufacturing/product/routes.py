@@ -116,7 +116,6 @@ def import_csv():
         if 'csv_file' in request.files:
             csv_file = request.files['csv_file']
             if csv_file.filename.endswith('.csv'):
-                #csv_reader = csv.reader(csv_file)
                 csv_reader = csv.reader(csv_file.stream.read().decode('utf-8-sig').splitlines())
                 next(csv_reader)  # Skip the header row
 
@@ -129,8 +128,13 @@ def import_csv():
                     price = row[2]
                     is_assembly = row[3]
 
-                    cursor.execute("INSERT INTO product (name, description, price, is_assembly) \
-                                    VALUES (%s, %s, %s, %s)", (name, description, price, is_assembly))
+                    # Check if the product already exists in the database by name
+                    cursor.execute("SELECT COUNT(*) FROM product WHERE name = %s", (name,))
+                    count = cursor.fetchone()[0]
+
+                    if count == 0:  # Product with the same name doesn't exist, insert it
+                        cursor.execute("INSERT INTO product (name, description, price, is_assembly) \
+                                        VALUES (%s, %s, %s, %s)", (name, description, price, is_assembly))
 
                 conn.commit()
 
