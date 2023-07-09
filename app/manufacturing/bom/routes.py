@@ -1,3 +1,4 @@
+import csv
 from flask import Blueprint, flash, render_template, redirect, request, url_for
 from app.db import connect
 
@@ -33,7 +34,8 @@ def get_bom(id):
                    WHERE bom_line.bom_id = %s", (id,))
 
     bom_lines = cursor.fetchall()
-    components_cost = sum(bom_line[5] * bom_line[4] for bom_line in bom_lines)
+
+    components_cost = sum(bom_line[5] * bom_line[4] if bom_line[5] and bom_line[4] else 0 for bom_line in bom_lines)
 
     cursor.execute("SELECT id, name FROM product")
     products = cursor.fetchall()
@@ -152,3 +154,54 @@ def delete_bom_line(bom_id, bom_line_id):
         conn.close()
 
         return redirect(url_for('bom.get_bom', id=bom_id))
+    
+@bp.route('/manufacturing/boms/import', methods=['GET', 'POST'])
+def import_csv():
+    if request.method == 'POST':
+        if 'csv_file' in request.files:
+            csv_file = request.files['csv_file']
+            if csv_file.filename.endswith('.csv'):
+                csv_reader = csv.reader(csv_file.stream.read().decode('utf-8-sig').splitlines())
+                next(csv_reader)  # Skip the header row
+
+                conn = connect()
+                cursor = conn.cursor()
+
+                bom_id = None  # Track the BoM ID
+                assembly_id = None  # Track the ID of the top product in this csv file, which is the assembly product of BoM
+
+                for row in csv_reader:
+                    name = row[0]
+                    quantity = row[1] if len(row) > 1 else None
+
+                    # Check if the product already exists in the database by name
+                    cursor.execute("SELECT id FROM product WHERE name = %s", (name,))
+                    result = cursor.fetchone()
+
+                    if result is None:
+                        # Product doesn't exist, create it
+                        cursor.execute("INSERT INTO product (name) VALUES (%s) RETURNING id", (name,))
+                        product_id = cursor.fetchone()[0]
+                    else:
+                        product_id = result[0]
+
+                    if bom_id is None:
+                        # First product, create the BoM
+                        cursor.execute("INSERT INTO bom (product_id) VALUES (%s) RETURNING id", (product_id,))
+                        bom_id = cursor.fetchone()[0]
+                        assembly_id = product_id 
+                    elif product_id != assembly_id: 
+                        # Create the BoM line (excluding the top product)
+                        cursor.execute("INSERT INTO bom_line (bom_id, component_id, quantity) \
+                                        VALUES (%s, %s, %s)", (bom_id, product_id, quantity))
+
+                conn.commit()
+
+                cursor.close()
+                conn.close()
+
+                return redirect(url_for('bom.get_bom', id=bom_id))
+
+
+
+
