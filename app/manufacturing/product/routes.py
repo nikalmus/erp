@@ -45,8 +45,28 @@ def create_product():
         conn = connect()
         cursor = conn.cursor()
 
-        cursor.execute("INSERT INTO product (name, description, price, is_assembly) \
-                       VALUES (%s, %s, %s, %s)", (name, description, price, is_assembly))
+        # Check if the product already exists in the database by name
+        cursor.execute("SELECT COUNT(*) FROM product WHERE name = %s", (name,))
+        count = cursor.fetchone()[0]
+        if count > 0:
+            flash('Product with the same name already exists.')
+            return redirect(url_for('products.create_product'))
+
+        if is_assembly == 'false' and (not price.strip() or price.strip() == ''):
+            flash('Price is required for non-assembly products.')
+            return redirect(url_for('products.create_product'))
+
+        # Add server-side check for empty string
+        if not price.strip() or price.strip() == '':
+            price = None
+
+
+        if price is None:
+            cursor.execute("INSERT INTO product (name, description, is_assembly) \
+                            VALUES (%s, %s, %s)", (name, description, is_assembly))
+        else:
+            cursor.execute("INSERT INTO product (name, description, price, is_assembly) \
+                            VALUES (%s, %s, %s, %s)", (name, description, price, is_assembly))
         conn.commit()
 
         cursor.close()
@@ -69,6 +89,20 @@ def update_product(id):
         description = request.form['description']
         price = request.form['price']
         is_assembly = request.form['is_assembly']
+
+        if is_assembly == 'false' and not price.strip():
+            flash('Price is required for non-assembly products.', 'error')
+            return redirect(url_for('products.update_product', id=id))
+
+        if not price.strip() or price.strip() == '':
+            price = None
+        else:
+            try:
+                price = float(price)
+            except ValueError:
+                flash('Invalid price format. Please enter a valid number.', 'error')
+                return redirect(url_for('products.update_product', id=id))
+
 
         cursor.execute("UPDATE product \
                        SET name = %s, \

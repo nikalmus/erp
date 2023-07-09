@@ -6,20 +6,30 @@
             <th>ID</th>
             <th>Name</th>
             <th>Description</th>
-            <th>Price</th>
+            {% if not product[4] %}  <!-- Check if is_assembly is False -->
+                <th>Price</th>
+            {% endif %}
             <th>Is Assembly</th>
         </tr>
         <tr>
             <td>{{ product[0] }}</td>
             <td>{{ product[1] }}</td>
             <td>{{ product[2] }}</td>
-            <td>{{ product[3] }}</td>
+            {% if not product[4] %}  <!-- Check if is_assembly is False -->
+                <td>{{ product[3] }}</td>
+            {% endif %}
             <td>{{ product[4] }}</td>
             <td>
-                <a href="{{ url_for('products.update_product', id=product[0]) }}" class="btn btn-primary">Update</a>
-                <form method="POST" action="{{ url_for('products.delete_product', id=product[0]) }}" style="display: inline;">
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                </form>
+                <div class="d-flex justify-content-between align-items-center">  
+                    <div clsss="me-2">  <!-- nested div for buttons, needed me-2 in both places to have room between buttons and align horiz. -->
+                        <a href="{{ url_for('products.update_product', id=product[0]) }}" class="btn btn-primary me-2">Update</a>
+                    </div>
+                    <div>  <!-- nested div for buttons -->
+                        <form method="POST" action="{{ url_for('products.delete_product', id=product[0]) }}" style="display: inline;">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
             </td>
         </tr>
     </table>
