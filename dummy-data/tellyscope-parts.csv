@@ -1,7 +1,7 @@
 name,description,price,is_assembly
 TV Set,"a TV",199.99,false
 Tennis Ball,"Yellow tennis ball for Tellyscope activation",2.99,false
-Launcher Arm,"Metal rod for launching tennis ball",12.99,true
+Launcher Arm,"Metal rod for launching tennis ball",12.99,false
 Spring Mechanism,"Compression spring for propelling tennis ball",8.99,false
 Trigger Lever,"Lever component for triggering mechanism",6.99,false
 Mounting Bracket,"Bracket component for triggering mechanism",3.99,false

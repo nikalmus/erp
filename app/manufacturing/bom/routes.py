@@ -75,7 +75,7 @@ def create_bom():
     conn = connect()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT id, name FROM product")
+    cursor.execute("SELECT * FROM product")
     products = cursor.fetchall()
 
     cursor.close()

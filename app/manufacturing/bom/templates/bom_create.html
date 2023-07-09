@@ -5,10 +5,8 @@
     <div class="form-group mt-3 mb-3">
         <label for="supplier">Assembly:</label>
         <select class="form-control" id="supplier" name="product_id" required>
-            {% for product in products %}
-                {% if product[4] %}  <!-- Check if is_assembly is True -->
+            {% for product in products if product[4] %}
                     <option value="{{ product[0] }}">{{ product[1] }}</option>
-                {% endif %}
             {% endfor %}
         </select>
     </div>
