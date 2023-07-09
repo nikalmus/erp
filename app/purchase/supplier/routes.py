@@ -36,7 +36,9 @@ def redirect_to_products():
 
 @bp.route('/purchase/suppliers/create', methods=['GET', 'POST'])
 def create_supplier():
+    print("CREATE SUPPLIER")
     if request.method == 'POST':
+        print("CREATE SUPPLIER -- POST")
         name = request.form['name']
         email = request.form['email']
 
