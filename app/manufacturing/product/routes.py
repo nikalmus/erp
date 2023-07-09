@@ -1,3 +1,4 @@
+import csv
 from flask import Blueprint, flash, render_template, redirect, request, url_for
 from app.db import connect
 
@@ -36,7 +37,6 @@ def redirect_to_products():
 @bp.route('/manufacturing/products/create', methods=['GET', 'POST'])
 def create_product():
     if request.method == 'POST':
-        print("PRODUCT CREATE...")
         name = request.form['name']
         description = request.form['description']
         price = request.form['price']
@@ -107,5 +107,36 @@ def delete_product(id):
 
     cursor.close()
     conn.close()
+
+    return redirect(url_for('products.get_products'))
+
+@bp.route('/manufacturing/products/import', methods=['GET', 'POST'])
+def import_csv():
+    if request.method == 'POST':
+        if 'csv_file' in request.files:
+            csv_file = request.files['csv_file']
+            if csv_file.filename.endswith('.csv'):
+                #csv_reader = csv.reader(csv_file)
+                csv_reader = csv.reader(csv_file.stream.read().decode('utf-8-sig').splitlines())
+                next(csv_reader)  # Skip the header row
+
+                conn = connect()
+                cursor = conn.cursor()
+
+                for row in csv_reader:
+                    name = row[0]
+                    description = row[1]
+                    price = row[2]
+                    is_assembly = row[3]
+
+                    cursor.execute("INSERT INTO product (name, description, price, is_assembly) \
+                                    VALUES (%s, %s, %s, %s)", (name, description, price, is_assembly))
+
+                conn.commit()
+
+                cursor.close()
+                conn.close()
+
+                return redirect(url_for('products.get_products'))
 
     return redirect(url_for('products.get_products'))

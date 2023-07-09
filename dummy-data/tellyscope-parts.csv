@@ -1,0 +1,15 @@
+name,description,price,is_assembly
+TV Set,"a TV",199.99,false
+Tennis Ball,"Yellow tennis ball for Tellyscope activation",2.99,false
+Launcher Arm,"Metal rod for launching tennis ball",12.99,true
+Spring Mechanism,"Compression spring for propelling tennis ball",8.99,false
+Trigger Lever,"Lever component for triggering mechanism",6.99,false
+Mounting Bracket,"Bracket component for triggering mechanism",3.99,false
+Trigger Spring,"Spring component for triggering mechanism",2.99,false
+Telescoping Shaft,"Metal or plastic tubes of various lengths for extension",39.99,false
+Support Brackets,"Metal brackets for supporting the assembly",14.99,false
+Locking Mechanism,"Mechanism for securing at desired length",9.99,false
+Rail,"Metal rail for guiding extension",19.99,false
+Tube,"Metal tube",7.99,false
+Coupler,"Coupler or connector to join tubes",4.99,false
+Fastening Hardware,"Various screws, nuts, bolts",5.99,false
