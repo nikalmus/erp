@@ -9,7 +9,9 @@ def get_boms():
     conn = connect()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM bom")
+    cursor.execute("""SELECT bom.id, bom.product_id, product.name 
+                   FROM bom JOIN product ON bom.product_id = product.id
+                   """)
     boms = cursor.fetchall()
 
     cursor.close()

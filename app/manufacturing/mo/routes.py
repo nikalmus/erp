@@ -9,19 +9,59 @@ def get_mos():
     conn = connect()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT mo.id, mo.date_created, mo.date_done \
+    selected_status = request.args.get('status')
+    selected_bom = request.args.get('bom')
+    selected_filter_type = request.args.get('filter_type')
+
+    query = """SELECT mo.id, mo.date_created, mo.date_done \
                 , mo.bom_id, mo.status, product.id, product.name, product.price \
                 FROM mo JOIN bom ON mo.bom_id = bom.id \
-                JOIN product ON bom.product_id = product.id"
-                )
+                JOIN product ON bom.product_id = product.id
+                WHERE 1=1"""
     
+    params = []
+    
+    if selected_status:
+        query += " AND mo.status = %s"
+        params.append(selected_status)
 
+    if selected_bom:
+        if selected_filter_type == 'AND':
+            query += " AND mo.bom_id = %s"
+        elif selected_filter_type == 'OR':
+            query += " OR mo.bom_id = %s"
+
+        params.append(selected_bom)
+
+    cursor.execute(query, params)
     mos = cursor.fetchall()
+
+    # Retrieve the boms and statuses
+    cursor.execute("""SELECT bom.id, bom.product_id, product.name
+                   FROM bom JOIN product ON bom.product_id = product.id
+                   WHERE product.is_assembly = True
+                   ORDER BY product.name""")
+    boms = cursor.fetchall()
+
+    status_query = "SELECT enumlabel FROM pg_enum WHERE enumtypid = 'mo_status'::regtype"
+    cursor.execute(status_query)
+    statuses = [row[0] for row in cursor.fetchall()]
 
     cursor.close()
     conn.close()
 
-    return render_template('mo_list.html', mos=mos)
+    cursor.close()
+    conn.close()
+
+    return render_template(
+        'mo_list.html', 
+        mos=mos,
+        boms=boms,
+        statuses=statuses,
+        selected_bom=selected_bom,
+        selected_status=selected_status,
+        selected_filter_type=selected_filter_type
+        )
 
 @bp.route('/manufacturing/mos/<int:id>', methods=['GET', 'POST'])
 def get_mo(id):

@@ -10,13 +10,11 @@
 </div>
 <table class="table table-striped table-bordered">
     <tr>
-        <th>ID</th>
-        <th>Product</th>
+        <th>ID & Assembly Name</th>
     </tr>
     {% for bom in boms %}
     <tr>
-        <td><a href="{{ url_for('bom.get_bom', id=bom[0]) }}">{{ bom[0] }}</a></td>
-        <td><a href="/manufacturing/products/{{ bom[1] }}">{{ bom[1] }}</a></td>
+        <td><a href="{{ url_for('bom.get_bom', id=bom[0]) }}">{{ bom[0] }}, {{ bom[2] }}</a></td>
     </tr>
     {% endfor %}
 </table>

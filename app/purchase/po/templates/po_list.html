@@ -74,9 +74,9 @@
     // Clear filter inputs and remove stored product value
     document.getElementById('clearFiltersBtn').addEventListener('click', function() {
         supplierDropdown.value = '';
-      document.getElementById('status').value = '';
-      localStorage.removeItem('selected_supplier');
-      window.location.href = "{{ url_for('po.get_pos') }}"; //to get rid of ?status=&supplier=... even after filer is cleared
+        document.getElementById('status').value = '';
+        localStorage.removeItem('selected_supplier');
+        window.location.href = "{{ url_for('po.get_pos') }}"; //to get rid of ?status=&supplier=... even after filer is cleared
     });
   </script>
 {% endblock %}
