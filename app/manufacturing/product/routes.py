@@ -9,13 +9,23 @@ def get_products():
     conn = connect()  
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM product")
+    search = request.args.get('search', default='')
+
+    query = "SELECT * FROM product"
+
+    params = []
+
+    if search:
+        query += " WHERE name ILIKE %s"
+        params.append(f"%{search}%")
+
+    cursor.execute(query, params)
     products = cursor.fetchall()
 
     cursor.close()
     conn.close()
 
-    return render_template('product_list.html', products=products)
+    return render_template('product_list.html', products=products, search=search)
 
 @bp.route('/manufacturing/products/<int:id>')
 def get_product(id):
