@@ -1,19 +1,75 @@
 {% extends 'base.html' %}
 {% block content %}
-<h4>Inventory Items</h4>
-<table class="table table-striped table-bordered">
-    <tr>
-        <th>ID</th>
-        <th>Product</th>
-        <th>Serial Number</th>
+  <h4>Inventory Items</h4>
+  <form id="filterForm" method="GET" action="{{ url_for('item.get_inventory_items') }}">
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label for="product">Product:</label>
+        <select class="form-control" id="product" name="product">
+          <option value="">All Products</option>
+          {% for product in products %}
+            <option value="{{ product[0] }}" {% if product[0] == selected_product %}selected{% endif %}>{{ product[1] }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label for="location">Location:</label>
+        <select class="form-control" id="location" name="location">
+          <option value="">All Locations</option>
+          {% for location in locations %}
+            <option value="{{ location}}" {% if location == selected_location %}selected{% endif %}>{{ location }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label for="filter_type">Filter Type:</label>
+        <select class="form-control" id="filter_type" name="filter_type">
+          <option value="AND" {% if selected_filter_type == 'AND' %}selected{% endif %}>AND</option>
+          <option value="OR" {% if selected_filter_type == 'OR' %}selected{% endif %}>OR</option>
+        </select>
+      </div>
+    </div>
+    <div class="mb-3">
+        <button type="submit" class="btn btn-primary">Filter</button>
+        <button id="clearFiltersBtn" type="button" class="btn btn-secondary">Clear Filters</button>
+    </div>
+  </form>
 
+  <table class="table table-striped table-bordered">
+    <tr>
+      <th>ID</th>
+      <th>Product ID & Name</th>
+      <th>Serial Number</th>
+      <th>Location</th>
     </tr>
     {% for inventory_item in inventory_items %}
     <tr>
-        <td><a href="{{ url_for('item.get_inventory_item', id=inventory_item[0]) }}">{{ inventory_item[0] }}</a></td>
-        <td><a href="/manufacturing/products/{{ inventory_item[1] }}">{{ inventory_item[1] }}</a></td>
-        <td>{{ inventory_item[2] }}</td>
+      <td><a href="{{ url_for('item.get_inventory_item', id=inventory_item[0]) }}">{{ inventory_item[0] }}</a></td>
+      <td><a href="/manufacturing/products/{{ inventory_item[1] }}">{{ inventory_item[1] }}, {{ inventory_item[4] }}</a></td>
+      <td>{{ inventory_item[2] }}</td>
+      <td>{{ inventory_item[3] }}</td>
     </tr>
     {% endfor %}
-</table>
+  </table>
+
+  <script>
+    // Preserve the selected product value - when "Filter" is clicked, product would revert to "All Products"
+    var productDropdown = document.getElementById('product');
+    productDropdown.addEventListener('change', function() {
+      localStorage.setItem('selected_product', this.value);
+    });
+    var storedProduct = localStorage.getItem('selected_product');
+    if (storedProduct) {
+      productDropdown.value = storedProduct;
+    }
+
+    document.getElementById('clearFiltersBtn').addEventListener('click', function() {
+      // Clear filter inputs and remove stored product value
+      productDropdown.value = '';
+      //document.getElementById('product').value = ''; //no longer need
+      document.getElementById('location').value = '';
+      localStorage.removeItem('selected_product');
+      document.getElementById('filterForm').submit();
+    });
+  </script>
 {% endblock %}
