@@ -52,7 +52,8 @@
     document.getElementById('clearSearchBtn').addEventListener('click', function() {
         // Clear search input
         document.getElementById('search').value = '';
-        document.getElementById('searchForm').submit();
+        // Navigate to the URL without the search parameter
+        window.location.href = "{{ url_for('products.get_products') }}";
     });
 </script>
 

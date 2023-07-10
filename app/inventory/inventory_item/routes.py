@@ -74,5 +74,5 @@ def get_inventory_item(id):
     return render_template('inventory_item_detail.html', inventory_item=inventory_item)
 
 @bp.route('/inventory/inventory_items/')
-def redirect_to_products():
+def redirect_to_items():
     return redirect(url_for('item.get_inventory_items'))

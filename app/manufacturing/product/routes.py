@@ -25,13 +25,11 @@ def get_products():
     products = cursor.fetchall()
 
     if sort == 'name':
-        products = sorted(products, key=lambda x: x[1])  # Sort by name
+        products = sorted(products, key=lambda product: product[1])  
     elif sort == 'price_asc':
-        products = sorted(products, key=lambda x: (Decimal(0) if x[3] is None else x[3], x[1]))  # Sort by price ascending, then by name
+        products = sorted(products, key=lambda product: (Decimal(0) if product[3] is None else product[3], product[1]))
     elif sort == 'price_desc':
-        products = sorted(products, key=lambda x: (Decimal('-Infinity') if x[3] is None else -x[3], x[1]))  # Sort by price descending, then by name
-    elif sort == 'clear_price_sort':  # Add this condition to clear the sorting by price
-        products = sorted(products, key=lambda x: x[1])  # Sort by name
+        products = sorted(products, key=lambda product: (Decimal('-Infinity') if product[3] is None else -product[3], product[1]))  
 
     cursor.close()
     conn.close()

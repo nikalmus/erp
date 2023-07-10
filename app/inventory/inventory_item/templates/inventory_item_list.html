@@ -53,7 +53,7 @@
   </table>
 
   <script>
-    // Preserve the selected product value - when "Filter" is clicked, product would revert to "All Products"
+    // when "Filter" is clicked, product would revert to "All Products". This fixes it:
     var productDropdown = document.getElementById('product');
     productDropdown.addEventListener('change', function() {
       localStorage.setItem('selected_product', this.value);
@@ -63,8 +63,8 @@
       productDropdown.value = storedProduct;
     }
 
+    // Clear filter inputs and remove stored product value
     document.getElementById('clearFiltersBtn').addEventListener('click', function() {
-      // Clear filter inputs and remove stored product value
       productDropdown.value = '';
       //document.getElementById('product').value = ''; //no longer need
       document.getElementById('location').value = '';
