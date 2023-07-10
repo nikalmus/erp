@@ -1,4 +1,9 @@
 {% extends 'base.html' %}
+
+{% block left_column %}
+    {% include 'inventory_content.html' %}
+{% endblock %}
+
 {% block content %}
     <h4>Stock Move Details</h4>
     <table class="table table-striped table-bordered">

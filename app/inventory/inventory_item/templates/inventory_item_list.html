@@ -1,4 +1,9 @@
 {% extends 'base.html' %}
+
+{% block left_column %}
+    {% include 'inventory_content.html' %}   
+{% endblock %}
+
 {% block content %}
   <h4>Inventory Items</h4>
   <form id="filterForm" method="GET" action="{{ url_for('item.get_inventory_items') }}">

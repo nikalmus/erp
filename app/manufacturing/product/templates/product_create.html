@@ -1,4 +1,9 @@
 {% extends 'base.html' %}
+
+{% block left_column %}
+    {% include 'manufacturing_content.html' %}
+{% endblock %}
+
 {% block content %}
     <h4>{% if product %}Update Product{% else %}Create New Product{% endif %}</h4>
     <form method="POST" action="{% if product %}{{ url_for('products.update_product', id=product[0]) }}

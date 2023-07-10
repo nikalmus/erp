@@ -1,4 +1,9 @@
 {% extends 'base.html' %}
+
+{% block left_column %}
+    {% include 'manufacturing_content.html' %}
+{% endblock %}
+
 {% block content %}
     <h2>Manufacturing Order <a href="/manufacturing/products/{{ mo[5] }}">{{ mo[6] }}</a></h2>
     <table class="table table-striped table-bordered">

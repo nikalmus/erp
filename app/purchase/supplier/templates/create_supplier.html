@@ -1,4 +1,9 @@
 {% extends 'base.html' %}
+
+{% block left_column %}
+    {% include 'purchase_content.html' %}
+{% endblock %}
+
 {% block content %}
     <h4>{% if supplier %}Update Supplier{% else %}Create New Supplier{% endif %}</h4>
     <form method="POST" action="{% if supplier %}{{ url_for('supplier.update_supplier', id=supplier[0]) }}

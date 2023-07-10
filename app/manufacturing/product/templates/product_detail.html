@@ -1,4 +1,9 @@
 {% extends 'base.html' %}
+
+{% block left_column %}
+    {% include 'manufacturing_content.html' %}
+{% endblock %}
+
 {% block content %}
     <h4>{{ product[1] }}</h4>
     <table class="table table-striped table-bordered">

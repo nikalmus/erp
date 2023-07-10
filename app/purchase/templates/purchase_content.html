@@ -1,0 +1,9 @@
+
+    <h4>Purchase</h4>
+    <a href="{{ url_for('purchase.purchase_home') }}">
+        <img src="{{ url_for('static', filename='images/purchase200.png') }}" alt="Inventory">
+    </a>
+    <ul>
+        <li><a href="{{ url_for('po.get_pos') }}">POs</a></li>
+        <li><a href="{{ url_for('supplier.get_suppliers') }}">Suppliers</a></li>
+    </ul>

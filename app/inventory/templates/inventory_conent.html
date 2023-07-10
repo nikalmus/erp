@@ -1,0 +1,8 @@
+    <h4>Inventory</h4>
+    <a href="{{ url_for('inventory.inventory_home') }}">
+        <img src="{{ url_for('static', filename='images/inventory200.png') }}" alt="Inventory">
+    </a>
+    <ul>
+        <li><a href="{{ url_for('item.get_inventory_items') }}">Inventory Items</a></li>
+        <li><a href="{{ url_for('stock_move.get_stock_moves') }}">Stock Moves</a></li>
+    </ul>

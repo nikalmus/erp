@@ -1,5 +1,24 @@
 {% extends 'base.html' %}
+
+{% block left_column %}
+    {% include 'manufacturing_content.html' %}
+{% endblock %}
+
 {% block content %}
+<h4>Create Bill of Materials</h4>
+<form method="POST" action="{{ url_for('bom.create_bom') }}">
+    <div class="form-group mt-3 mb-3">
+        <label for="supplier">Assembly:</label>
+        <select class="form-control" id="supplier" name="product_id" required>
+            {% for product in products if product[4] %}
+                    <option value="{{ product[0] }}">{{ product[1] }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">Create BOM</button>
+</form>
+
+
 <h4>Bills Of Materials</h4>
 <div class="mt-3 mb-3">
     <a href="{{ url_for('bom.create_bom') }}" class="btn btn-primary">New</a>

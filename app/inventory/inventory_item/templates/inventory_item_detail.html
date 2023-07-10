@@ -1,4 +1,9 @@
 {% extends 'base.html' %}
+
+{% block left_column %}
+    {% include 'inventory_content.html' %}
+{% endblock %}
+
 {% block content %}
 <body>
     <h4>Inventory Item <a href="/manufacturing/products/{{ inventory_item[1] }}">{{ inventory_item[4] }}</a> Details</h4>
