@@ -114,6 +114,12 @@ header .banner-content img {
     margin-top: 5px;
 }
 
+.clear-sort-link {
+  color: red;
+  font-weight: bold;
+  text-decoration: none;
+}
+
 footer{
   margin-top: 100px;
 }

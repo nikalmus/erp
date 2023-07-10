@@ -1,4 +1,5 @@
 import csv
+from decimal import Decimal
 from flask import Blueprint, flash, render_template, redirect, request, url_for
 from app.db import connect
 
@@ -6,26 +7,37 @@ bp = Blueprint('products', __name__, template_folder='templates')
 
 @bp.route('/manufacturing/products')
 def get_products():
-    conn = connect()  
+    conn = connect()
     cursor = conn.cursor()
 
     search = request.args.get('search', default='')
+    sort = request.args.get('sort', default='name')
 
     query = "SELECT * FROM product"
 
-    params = []
-
     if search:
         query += " WHERE name ILIKE %s"
-        params.append(f"%{search}%")
+        params = ['%' + search + '%']
+        cursor.execute(query, params)
+    else:
+        cursor.execute(query)
 
-    cursor.execute(query, params)
     products = cursor.fetchall()
+
+    if sort == 'name':
+        products = sorted(products, key=lambda x: x[1])  # Sort by name
+    elif sort == 'price_asc':
+        products = sorted(products, key=lambda x: (Decimal(0) if x[3] is None else x[3], x[1]))  # Sort by price ascending, then by name
+    elif sort == 'price_desc':
+        products = sorted(products, key=lambda x: (Decimal('-Infinity') if x[3] is None else -x[3], x[1]))  # Sort by price descending, then by name
+    elif sort == 'clear_price_sort':  # Add this condition to clear the sorting by price
+        products = sorted(products, key=lambda x: x[1])  # Sort by name
 
     cursor.close()
     conn.close()
 
-    return render_template('product_list.html', products=products, search=search)
+    return render_template('product_list.html', products=products, search=search, sort=sort)
+
 
 @bp.route('/manufacturing/products/<int:id>')
 def get_product(id):

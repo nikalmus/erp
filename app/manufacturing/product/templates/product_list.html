@@ -24,14 +24,25 @@
     <tr>
         <th>ID</th>
         <th>Name</th>
-        <th>Price</th>
+        <th>Price
+            {% if sort == 'price_asc' %}
+                <a href="{{ url_for('products.get_products', sort='price_desc') }}">▲</a>
+            {% elif sort == 'price_desc' %}
+                <a href="{{ url_for('products.get_products', sort='price_asc') }}">▼</a>
+            {% else %}
+                <a href="{{ url_for('products.get_products', sort='price_asc') }}">▼</a>
+            {% endif %}
+            {% if sort in ['price_asc', 'price_desc'] %}
+            <a href="{{ url_for('products.get_products') }}" class="clear-sort-link">✕</a>
+            {% endif %}
+        </th>
         <th>Is Assembly</th>
     </tr>
     {% for product in products %}
     <tr>
         <td>{{ product[0] }}</td>
         <td><a href="{{ url_for('products.get_product', id=product[0]) }}">{{ product[1] }}</a></td>
-        <td>{{ product[3] }}</td>
+        <td>{% if product[3] is not none %}{{ product[3] }}{% endif %}</td>
         <td>{{ product[4] }}</td>
     </tr>
     {% endfor %}

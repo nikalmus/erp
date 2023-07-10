@@ -13,8 +13,6 @@ def get_inventory_items():
     selected_location = request.args.get('location')
     selected_filter_type = request.args.get('filter_type')
 
-    print(f"SELECTED PROD {selected_product}")
-
     query = """SELECT item.id, item.product_id, item.serial_number, item.location, product.name 
                FROM inventory_item AS item 
                JOIN product ON item.product_id = product.id
