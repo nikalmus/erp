@@ -8,13 +8,51 @@ def get_pos():
     conn = connect()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT id, created_date, received_date, status, supplier_id FROM po")
+    selected_status = request.args.get('status')
+    selected_supplier = request.args.get('supplier')
+    selected_filter_type = request.args.get('filter_type')
+
+    query = """SELECT po.id, po.created_date, po.received_date, po.status, po.supplier_id, supplier.name 
+                FROM po JOIN supplier ON po.supplier_id = supplier.id
+                WHERE 1=1"""
+    
+    params = []
+
+    if selected_status:
+        query += " AND po.status = %s"
+        params.append(selected_status)
+
+    if selected_supplier:
+        if selected_filter_type == 'AND':
+            query += " AND po.supplier_id = %s"
+        elif selected_filter_type == 'OR':
+            query += " OR po.supplier_id = %s"
+
+        params.append(selected_supplier)
+
+    cursor.execute(query, params)
     pos = cursor.fetchall()
+
+    # Retrieve the products and locations
+    cursor.execute("SELECT id, name FROM supplier ORDER BY name")
+    suppliers = cursor.fetchall()
+
+    status_query = "SELECT enumlabel FROM pg_enum WHERE enumtypid = 'po_status'::regtype"
+    cursor.execute(status_query)
+    statuses = [row[0] for row in cursor.fetchall()]
 
     cursor.close()
     conn.close()
 
-    return render_template('po_list.html', pos=pos)
+    return render_template(
+        'po_list.html', 
+        pos=pos,
+        suppliers=suppliers,
+        statuses=statuses,
+        selected_supplier=selected_supplier,
+        selected_status=selected_status,
+        selected_filter_type=selected_filter_type
+    )
 
 @bp.route('/purchase/pos/<int:id>', methods=['GET', 'POST'])
 def get_po(id):

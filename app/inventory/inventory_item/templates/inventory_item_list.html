@@ -69,7 +69,7 @@
       //document.getElementById('product').value = ''; //no longer need
       document.getElementById('location').value = '';
       localStorage.removeItem('selected_product');
-      document.getElementById('filterForm').submit();
+      window.location.href = "{{ url_for('item.get_inventory_items') }}";
     });
   </script>
 {% endblock %}

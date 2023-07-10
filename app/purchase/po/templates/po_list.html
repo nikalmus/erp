@@ -8,13 +8,47 @@
         <input type="file" name="csv_file" accept=".csv">
     </form>
 </div>
+
+<form id="filterForm" method="GET" action="{{ url_for('po.get_pos') }}">
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label for="status">Status:</label>
+        <select class="form-control" id="status" name="status">
+          <option value="">All Statuses</option>
+          {% for status in statuses %}
+            <option value="{{ status }}" {% if status == selected_status %}selected{% endif %}>{{ status }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label for="supplier">Suppliers:</label>
+        <select class="form-control" id="supplier" name="supplier">
+          <option value="">All Suppliers</option>
+          {% for supplier in suppliers %}
+          <option value="{{ supplier[0] }}" {% if supplier[0] == selected_supplier %}selected{% endif %}>{{ supplier[1] }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label for="filter_type">Filter Type:</label>
+        <select class="form-control" id="filter_type" name="filter_type">
+          <option value="AND" {% if selected_filter_type == 'AND' %}selected{% endif %}>AND</option>
+          <option value="OR" {% if selected_filter_type == 'OR' %}selected{% endif %}>OR</option>
+        </select>
+      </div>
+    </div>
+    <div class="mb-3">
+        <button type="submit" class="btn btn-primary">Filter</button>
+        <button id="clearFiltersBtn" type="button" class="btn btn-secondary">Clear Filters</button>
+    </div>
+  </form>
 <table class="table table-striped table-bordered">
     <tr>
         <th>ID</th>
         <th>Created Date</th>
         <th>Received Date</th>
         <th>Status</th>
-        <th>Supplier</th>
+        <th>Supplier ID, Name</th>
     </tr>
     {% for po in pos %}
     <tr>
@@ -22,9 +56,28 @@
         <td>{{ po[1].strftime('%Y-%m-%d %H:%M') if po[1] else '' }}</td>
         <td>{{ po[2].strftime('%Y-%m-%d %H:%M') if po[2] else '' }}</td>
         <td>{{ po[3] }}</td>
-        <td><a href="/purchase/suppliers/{{ po[4] }}">{{ po[4] }}</a></td>
+        <td><a href="/purchase/suppliers/{{ po[4] }}">{{ po[4] }}, {{ po[5] }}</a></td>
     </tr>
     {% endfor %}
 </table>
+<script>
+    // when "Filter" is clicked, supplier would revert to "All Suppliers". This fixes it:
+    var supplierDropdown = document.getElementById('supplier');
+    supplierDropdown.addEventListener('change', function() {
+      localStorage.setItem('selected_supplier', this.value);
+    });
+    var storedSupplier = localStorage.getItem('selected_supplier');
+    if (storedSupplier) {
+        supplierDropdown.value = storedSupplier;
+    }
+
+    // Clear filter inputs and remove stored product value
+    document.getElementById('clearFiltersBtn').addEventListener('click', function() {
+        supplierDropdown.value = '';
+      document.getElementById('status').value = '';
+      localStorage.removeItem('selected_supplier');
+      window.location.href = "{{ url_for('po.get_pos') }}"; //to get rid of ?status=&supplier=... even after filer is cleared
+    });
+  </script>
 {% endblock %}
 
