@@ -12,7 +12,7 @@ def get_pos():
     selected_supplier = request.args.get('supplier')
     selected_filter_type = request.args.get('filter_type')
 
-    query = """SELECT po.id, po.created_date, po.received_date, po.status, po.supplier_id, supplier.name 
+    query = """SELECT po.id, po.date_created, po.received_date, po.status, po.supplier_id, supplier.name 
                 FROM po JOIN supplier ON po.supplier_id = supplier.id
                 WHERE 1=1"""
     
@@ -66,7 +66,7 @@ def get_po(id):
         cursor.execute("UPDATE po SET status = %s WHERE id = %s", (status, id))
 
         # Retrieve the updated PO information
-        cursor.execute("SELECT id, created_date, received_date, status, supplier_id FROM po WHERE id = %s", (id,))
+        cursor.execute("SELECT id, date_created, received_date, status, supplier_id FROM po WHERE id = %s", (id,))
         po_status = cursor.fetchone()[3]
         
         if po_status == "Completed":
@@ -95,7 +95,7 @@ def get_po(id):
     conn = connect()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT id, created_date, received_date, status, supplier_id FROM po WHERE id = %s", (id,))
+    cursor.execute("SELECT id, date_created, received_date, status, supplier_id FROM po WHERE id = %s", (id,))
     po = cursor.fetchone()
 
     cursor.execute("SELECT po_line.id, po_line.po_id, po_line.product_id, \

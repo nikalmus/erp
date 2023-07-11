@@ -40,12 +40,12 @@ def create_supplier():
     if request.method == 'POST':
         print("CREATE SUPPLIER -- POST")
         name = request.form['name']
-        email = request.form['email']
+        contact = request.form['contact']
 
         conn = connect()
         cursor = conn.cursor()
 
-        cursor.execute("INSERT INTO supplier (name, email) VALUES (%s, %s)", (name, email))
+        cursor.execute("INSERT INTO supplier (name, contact) VALUES (%s, %s)", (name, contact))
         conn.commit()
 
         cursor.close()
@@ -65,9 +65,9 @@ def update_supplier(id):
 
     if request.method == 'POST':
         name = request.form['name']
-        email = request.form['email']
+        contact = request.form['contact']
 
-        cursor.execute("UPDATE supplier SET name = %s, email = %s WHERE id = %s", (name, email, id))
+        cursor.execute("UPDATE supplier SET name = %s, contact = %s WHERE id = %s", (name, contact, id))
         conn.commit()
 
         cursor.close()

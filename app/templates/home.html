@@ -1,17 +1,40 @@
 {% extends 'base.html' %} 
+{% block left_column %}
+    {% include 'top_nav.html' %}
+{% endblock %}
 {% block content %}
-    <div class="icon-wrapper">
-        <a href="{{ url_for('inventory.inventory_home') }}">
-            <img src="{{ url_for('static', filename='images/inventory200.png') }}" alt="Inventory">
-            <span>Inventory</span>
-        </a>
-        <a href="{{ url_for('manufacturing.manufacturing_home') }}">
-            <img src="{{ url_for('static', filename='images/manufacturing200.png') }}" alt="Manufacturing">
-            <span>Manufacturing</span>
-        </a>
-        <a href="{{ url_for('purchase.purchase_home') }}">
-            <img src="{{ url_for('static', filename='images/purchase200.png') }}" alt="Purchase">
-            <span>Purchase</span>
-        </a>
-    </div>
+    <img src="{{ url_for('static', filename='images/db-diagram.png') }}" alt="db diagram">
+    <h4>How to start:</h4>
+    <ol>
+        <li>In Manufacturing module: create Product(s) manually or bulk import from CSV.</li>
+        <li>After you have Products you can create a BOM (Bills of Materials) and associated BOM Lines manually or import from CSV</li>
+        <ul>
+            <li>If you prefer, skip step 1 and start by importing a BOM with its BOM Lines from CSV.</li>
+            <li>CSV must contain a top product (assembly) and products (component parts) for individual BOM Lines. See Help for samples.</li>
+            <li>If a product associated with a BOM Line is not found it will be created automatically.</li>
+            <li>Products are uniquily identified by name and duplicates are skipped</li>
+        </ul>
+        <li>In Purchase module: create Supplier(s).</li>
+        <li>Now that you have Suppliers and Products, you can create POs (Purchase Orders) either manually or import from CSV.</li>
+        <ul>
+            <li>PO has following states: Draft, Pending Approval, Approved, In Progress, Completed.</li>
+            <li>As soon as PO is marked as completed the following records will be automatically created in the Inventory module:</li>
+            <ul>
+                <li>Inventory Items for each product on a PO Line,</li>
+                <li>Stock Moves from Supplier to Warehouse.</li>
+            </ul>
+        </ul>
+        <li>In Manufacturing module: create an MO(Manufacturing Order).</li>
+        <ul>
+            <li>Select a BOM for the MO. BOM Lines will populate automatically.</li>
+            <li>MO has following states: Draft, Pending, Reserved, In Progress, Completed.</li>
+            <li>To mark an MO as Reserved each BOM Line must have required quanity of components available as a result of POs completed above.</li>
+            <li>If required quanity for each BOM Line is available, you may reserve the components.</li>
+            <li>This will automatically update Inventory Items and create Stock moves from Warehose to Factory.</li>
+            <li>If MO is cancelled prior to being completed:</li>
+            <ul>
+                <li>new Stock Moves from Factory back to Warehose will be created,</li>
+                <li>Inventory Items will be updated.</li>
+            </ul>
+    </ol>
 {% endblock %}

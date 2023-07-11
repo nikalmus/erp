@@ -266,7 +266,7 @@ ALTER SEQUENCE public.mo_id_seq OWNED BY public.mo.id;
 
 CREATE TABLE public.po (
     id integer NOT NULL,
-    created_date timestamp with time zone DEFAULT now(),
+    date_created timestamp with time zone DEFAULT now(),
     status public.po_status DEFAULT 'Draft'::public.po_status,
     supplier_id integer,
     received_date timestamp without time zone,
@@ -415,7 +415,7 @@ ALTER SEQUENCE public.stock_move_id_seq OWNED BY public.stock_move.id;
 CREATE TABLE public.supplier (
     id integer NOT NULL,
     name character varying(255),
-    email character varying(255)
+    contact character varying(255)
 );
 
 
