@@ -7,28 +7,33 @@
     <h6>How to start:</h6>
     <div class="columns">
         <div class="column">
-          <strong>Manufacturing</strong>: create Products and Bill of Materials. Both support import from CSV.<br>
+          <strong>Manufacturing</strong>: create Products and a Bill of Materials. Both support import from CSV.<br>
           Or skip Product creation and import a BOM with associated BOM Lines from CSV.<br>
           CSV must contain a top product (assembly) and products (component parts) for individual BOM Lines. See Help for samples.<br>
-          If a product associated with a BOM Line is not found, it will be created automatically.<br>
-          Products are uniquely identified by name, and duplicates are skipped.
+          If a product associated with a BOM Line is not found, it will be created automatically. <br>
+          Duplicates are skipped.<br>
+          <strong>Purchase</strong>: create Supplier(s).<br>
+          Now that you have Suppliers and Products, you can create Purchase Orders either manually or import from CSV.<br>
+          Mark PO as completed when items are received.
         </div>
         <div class="column">
-        <strong>Purchase</strong>: create Supplier(s).<br>
-          Now that you have Suppliers and Products, you can create Purchase Orders either manually or import from CSV.<br>
-          As soon as PO is marked as completed, the following records will be automatically created in the <strong>Inventory</strong> module:<br>
+          <strong>Inventory:</strong> when PO is marked as completed these records created autmatically:<br>
           <ul>
             <li>Inventory Items for each product on a PO Line,</li>
             <li>Stock Moves from Supplier to Warehouse.</li>
           </ul>
-        </div>
-        <div class="column">
-        <strong>Manufacturing</strong>: create an MO (Manufacturing Order).<br>
+          <strong>Manufacturing</strong>: create an MO (Manufacturing Order).<br>
           Select a BOM for the MO. BOM Lines will populate automatically.<br>
           To mark an MO as Reserved, each BOM Line must have the required quantity of components available as a result of completed POs.<br>
-          If the required quantity for each BOM Line is available, you may reserve the components.<br>
-          This will automatically update Inventory Items and create Stock moves from Warehouse to Factory.<br>
-          If an MO is cancelled prior to being completed, the these changes will automatically triggered in the <strong>Inventory</strong> module:<br>
+          If the required quantity for each BOM Line is available, reserve the components.<br>
+        </div>
+        <div class="column">
+          <strong>Inventory</strong>: as soon as MO is marked as reserved these actions will be triggered automatically<br>
+          <ul>
+            <li>Inventory Items for each product on a BOM Line will be updated,</li>
+            <li>new Stock Moves from Supplier to Warehouse will be created.</li>
+          </ul>
+          If MO is cancelled prior to being completed<br>
           <ul>
             <li>new Stock Moves from Factory back to Warehouse will be created,</li>
             <li>Inventory Items will be updated</li>
