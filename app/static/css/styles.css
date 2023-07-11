@@ -19,8 +19,8 @@ a {
   text-decoration: none;
 }
 
-/* Remove bullet points from unordered lists */
-ul li {
+/* Remove bullet points from unordered lists except in columns */
+ul:not(.column ul) li {
   list-style-type: none;
 }
 
@@ -28,6 +28,17 @@ ul li {
   margin-left: auto;
   margin-right: auto;
 }
+
+.columns {
+  display: flex;
+}
+
+.column {
+  flex: 1;
+  margin-right: 20px;
+  font-size: 80%;
+}
+
 
 .supplier-container {
     display: flex;

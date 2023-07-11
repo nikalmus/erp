@@ -87,7 +87,7 @@ def get_po(id):
                                    VALUES (%s, uuid_generate_v4(), 'Warehouse', %s) RETURNING id", (product_id, po_line[0]))
                     inventory_item_id = cursor.fetchone()[0]
                     cursor.execute("INSERT INTO stock_move (inventory_item_id, source_location, destination_location, move_date) \
-                                   VALUES (%s, 'Customer', 'Warehouse', now())", (inventory_item_id,))
+                                   VALUES (%s, 'Supplier', 'Warehouse', now())", (inventory_item_id,))
         conn.commit()      
         cursor.close()
         conn.close()
