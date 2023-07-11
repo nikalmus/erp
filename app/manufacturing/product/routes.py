@@ -1,3 +1,5 @@
+import csv
+from decimal import Decimal
 from flask import Blueprint, flash, render_template, redirect, request, url_for
 from app.db import connect
 
@@ -5,16 +7,35 @@ bp = Blueprint('products', __name__, template_folder='templates')
 
 @bp.route('/manufacturing/products')
 def get_products():
-    conn = connect()  
+    conn = connect()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM product")
+    search = request.args.get('search', default='')
+    sort = request.args.get('sort', default='name')
+
+    query = "SELECT * FROM product"
+
+    if search:
+        query += " WHERE name ILIKE %s"
+        params = ['%' + search + '%']
+        cursor.execute(query, params)
+    else:
+        cursor.execute(query)
+
     products = cursor.fetchall()
+
+    if sort == 'name':
+        products = sorted(products, key=lambda product: product[1])  
+    elif sort == 'price_asc':
+        products = sorted(products, key=lambda product: (Decimal(0) if product[3] is None else product[3], product[1]))
+    elif sort == 'price_desc':
+        products = sorted(products, key=lambda product: (Decimal('-Infinity') if product[3] is None else -product[3], product[1]))  
 
     cursor.close()
     conn.close()
 
-    return render_template('product_list.html', products=products)
+    return render_template('product_list.html', products=products, search=search, sort=sort)
+
 
 @bp.route('/manufacturing/products/<int:id>')
 def get_product(id):
@@ -36,7 +57,6 @@ def redirect_to_products():
 @bp.route('/manufacturing/products/create', methods=['GET', 'POST'])
 def create_product():
     if request.method == 'POST':
-        print("PRODUCT CREATE...")
         name = request.form['name']
         description = request.form['description']
         price = request.form['price']
@@ -45,8 +65,28 @@ def create_product():
         conn = connect()
         cursor = conn.cursor()
 
-        cursor.execute("INSERT INTO product (name, description, price, is_assembly) \
-                       VALUES (%s, %s, %s, %s)", (name, description, price, is_assembly))
+        # Check if the product already exists in the database by name
+        cursor.execute("SELECT COUNT(*) FROM product WHERE name = %s", (name,))
+        count = cursor.fetchone()[0]
+        if count > 0:
+            flash('Product with the same name already exists.')
+            return redirect(url_for('products.create_product'))
+
+        if is_assembly == 'false' and (not price.strip() or price.strip() == ''):
+            flash('Price is required for non-assembly products.')
+            return redirect(url_for('products.create_product'))
+
+        # Add server-side check for empty string
+        if not price.strip() or price.strip() == '':
+            price = None
+
+
+        if price is None:
+            cursor.execute("INSERT INTO product (name, description, is_assembly) \
+                            VALUES (%s, %s, %s)", (name, description, is_assembly))
+        else:
+            cursor.execute("INSERT INTO product (name, description, price, is_assembly) \
+                            VALUES (%s, %s, %s, %s)", (name, description, price, is_assembly))
         conn.commit()
 
         cursor.close()
@@ -69,6 +109,20 @@ def update_product(id):
         description = request.form['description']
         price = request.form['price']
         is_assembly = request.form['is_assembly']
+
+        if is_assembly == 'false' and not price.strip():
+            flash('Price is required for non-assembly products.', 'error')
+            return redirect(url_for('products.update_product', id=id))
+
+        if not price.strip() or price.strip() == '':
+            price = None
+        else:
+            try:
+                price = float(price)
+            except ValueError:
+                flash('Invalid price format. Please enter a valid number.', 'error')
+                return redirect(url_for('products.update_product', id=id))
+
 
         cursor.execute("UPDATE product \
                        SET name = %s, \
@@ -107,5 +161,40 @@ def delete_product(id):
 
     cursor.close()
     conn.close()
+
+    return redirect(url_for('products.get_products'))
+
+@bp.route('/manufacturing/products/import', methods=['GET', 'POST'])
+def import_csv():
+    if request.method == 'POST':
+        if 'csv_file' in request.files:
+            csv_file = request.files['csv_file']
+            if csv_file.filename.endswith('.csv'):
+                csv_reader = csv.reader(csv_file.stream.read().decode('utf-8-sig').splitlines())
+                next(csv_reader)  # Skip the header row
+
+                conn = connect()
+                cursor = conn.cursor()
+
+                for row in csv_reader:
+                    name = row[0]
+                    description = row[1]
+                    price = row[2]
+                    is_assembly = row[3]
+
+                    # Check if the product already exists in the database by name
+                    cursor.execute("SELECT COUNT(*) FROM product WHERE name = %s", (name,))
+                    count = cursor.fetchone()[0]
+
+                    if count == 0:  # Product with the same name doesn't exist, insert it
+                        cursor.execute("INSERT INTO product (name, description, price, is_assembly) \
+                                        VALUES (%s, %s, %s, %s)", (name, description, price, is_assembly))
+
+                conn.commit()
+
+                cursor.close()
+                conn.close()
+
+                return redirect(url_for('products.get_products'))
 
     return redirect(url_for('products.get_products'))

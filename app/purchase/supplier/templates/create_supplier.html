@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
+
+{% block left_column %}
+    {% include 'purchase_content.html' %}
+{% endblock %}
+
 {% block content %}
     <h4>{% if supplier %}Update Supplier{% else %}Create New Supplier{% endif %}</h4>
-    <form>
+    <form method="POST" action="{% if supplier %}{{ url_for('supplier.update_supplier', id=supplier[0]) }}
+                                {% else %}{{ url_for('supplier.create_supplier') }}{% endif %}">
         <div class="row mb-3">
             <div class="col-md-6">
                 <label for="name" class="form-label">Name:</label>

@@ -1,4 +1,9 @@
 {% extends 'base.html' %}
+
+{% block left_column %}
+    {% include 'manufacturing_content.html' %}
+{% endblock %}
+
 {% block content %}
     <h4>{% if product %}Update Product{% else %}Create New Product{% endif %}</h4>
     <form method="POST" action="{% if product %}{{ url_for('products.update_product', id=product[0]) }}
@@ -9,7 +14,8 @@
                 <input type="text" class="form-control" 
                                    id="name" 
                                    name="name" 
-                                   value="{% if product %}{{ product[1] }}{% endif %}">
+                                   value="{% if product %}{{ product[1] }}{% endif %}"
+                                   required>
             </div>
             <div class="col-md-6">
                 <label for="description" class="form-label">Description:</label>
@@ -20,14 +26,30 @@
             </div>
             <div class="col-md-6">
                 <label for="price" class="form-label">Price:</label>
-                <input type="text" class="form-control" 
-                                   id="price" 
-                                   name="price" 
-                                   value="{% if product %}{{ product[3] }}{% endif %}">
+                {% if product %}
+                    {% if product[3] is not none %}
+                        <input type="text" class="form-control" 
+                               id="price" 
+                               name="price" 
+                               value="{{ product[3] }}"
+                               pattern="[0-9]+(\.[0-9]{1,2})?">
+                    {% else %}
+                        <input type="text" class="form-control" 
+                               id="price" 
+                               name="price" 
+                               pattern="[0-9]+(\.[0-9]{1,2})?">
+                    {% endif %}
+                {% else %}
+                    <input type="text" class="form-control" 
+                           id="price" 
+                           name="price" 
+                           pattern="[0-9]+(\.[0-9]{1,2})?">
+                {% endif %}
             </div>
+                    
             <div class="col-md-6">
                 <label for="is_assembly" class="form-label">Is Assembly:</label>
-                <select class="form-select" id="is_assembly" name="is_assembly">
+                <select class="form-select" id="is_assembly" name="is_assembly" required>
                     <option value="true" {% if product and product[4] == True %}selected{% endif %}>True</option>
                     <option value="false" {% if not product or product[4] == False %}selected{% endif %}>False</option>
                 </select>

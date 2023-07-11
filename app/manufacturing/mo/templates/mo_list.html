@@ -1,25 +1,85 @@
 {% extends 'base.html' %}
+
+{% block left_column %}
+    {% include 'manufacturing_content.html' %}
+{% endblock %}
+
 {% block content %}
 <h4>Manufacturing Orders</h4>
-<a href="{{ url_for('mo.create_mo') }}" class="btn btn-primary">New</a>
+<div class="mt-3 mb-3">
+    <a href="{{ url_for('mo.create_mo') }}" class="btn btn-primary">New</a>
+</div>
+<div class="mb-3">
+<form id="filterForm" method="GET" action="{{ url_for('mo.get_mos') }}">
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label for="status">Status:</label>
+        <select class="form-control" id="status" name="status">
+          <option value="">All Statuses</option>
+          {% for status in statuses %}
+            <option value="{{ status }}" {% if status == selected_status %}selected{% endif %}>{{ status }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label for="bom">Bills of Materials:</label>
+        <select class="form-control" id="bom" name="bom">
+          <option value="">All Bills of Materials</option>
+          {% for bom in boms %}
+          <option value="{{ bom[0] }}" {% if bom[0] == selected_bom %}selected{% endif %}>{{ bom[2] }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label for="filter_type">Filter Type:</label>
+        <select class="form-control" id="filter_type" name="filter_type">
+          <option value="AND" {% if selected_filter_type == 'AND' %}selected{% endif %}>AND</option>
+          <option value="OR" {% if selected_filter_type == 'OR' %}selected{% endif %}>OR</option>
+        </select>
+      </div>
+    </div>
+    <div class="mb-3">
+        <button type="submit" class="btn btn-primary">Filter</button>
+        <button id="clearFiltersBtn" type="button" class="btn btn-secondary">Clear Filters</button>
+    </div>
+  </form>
+</div>
+
 <table class="table table-striped table-bordered">
     <tr>
-        <th>ID</th>
+        <th>MO ID & & Assembly Name</th>
         <th>Date Created</th>
         <th>Date Done</th>
-        <th>BoM ID</th>
+        <th>BoM ID </th>
         <th>Status</th>
-        <th>Product</th>
     </tr>
     {% for mo in mos %}
     <tr>
-        <td><a href="{{ url_for('mo.get_mo', id=mo[0]) }}">{{ mo[0] }}</a></td>
+        <td><a href="{{ url_for('mo.get_mo', id=mo[0]) }}">{{ mo[0] }}, {{ mo[6] }}</a></td>
         <td>{{ mo[1].strftime('%Y-%m-%d %H:%M') if mo[1] else '' }}</td>
         <td>{{ mo[2].strftime('%Y-%m-%d %H:%M') if mo[2] else '' }}</td>
         <td><a href="/manufacturing/boms/{{ mo[3] }}">{{ mo[3] }}</a></td>
         <td>{{ mo[4] }}</td>
-        <td><a href="/manufacturing/products/{{ mo[5] }}">{{ mo[6] }}</a></td>
     </tr>
     {% endfor %}
 </table>
+<script>
+    // when "Filter" is clicked, supplier would revert to "All BoMs". This fixes it:
+    var bomDropdown = document.getElementById('bom');
+    bomDropdown.addEventListener('change', function() {
+      localStorage.setItem('selected_bom', this.value);
+    });
+    var storedBoM = localStorage.getItem('selected_bom');
+    if (storedBoM) {
+        bomDropdown.value = storedBoM;
+    }
+
+    // Clear filter inputs and remove stored product value
+    document.getElementById('clearFiltersBtn').addEventListener('click', function() {
+        bomDropdown.value = '';
+        document.getElementById('status').value = '';
+        localStorage.removeItem('selected_bom');
+        window.location.href = "{{ url_for('mo.get_mos') }}"; //to get rid of ?status=... even after filer is cleared
+    });
+  </script>
 {% endblock %}

@@ -1,0 +1,20 @@
+<body>
+    <div class="left-column">
+    <div class="mt-3 mb-3">
+        <img src="{{ url_for('static', filename='images/inventory200.png') }}" alt="Inventory" width="140">
+        <p>Inventory</p>
+    </div>
+    <div class="mt-3 mb-3">
+        <a href="{{ url_for('manufacturing.manufacturing_home') }}">
+            <img src="{{ url_for('static', filename='images/manufacturing200.png') }}" alt="Manufacturing" width="140">
+            <p>Manufacturing</p>
+        </a>
+    </div>
+    <div class="mt-3 mb-3">
+        <a href="{{ url_for('purchase.purchase_home') }}">
+            <img src="{{ url_for('static', filename='images/purchase200.png') }}" alt="Purchase" width="140">
+            <p>Purchase</p>
+    </a>
+    </div>
+</div>
+</body>

@@ -1,0 +1,12 @@
+name,description,price,is_assembly
+Vacuum Motor,"Powerful motor for suction",99.99,false
+Teeth Attachment,"Sharp metal teeth attachment for crumbs",19.99,false
+Suction Hose,"Flexible hose for suction",14.99,false
+Dirt Collection Bag,"Bag for collecting dirt and debris",8.99,false
+Vacuum Handle,"Handle for gripping and maneuvering the vacuum",12.99,false
+On/Off Switch,"Switch for controlling the vacuum's power",6.99,false
+Wheels,"Set of wheels for easy movement",24.99,false
+Cracker Sensor,"Sensor for detecting cracker crumbs",9.99,false
+Dustpan and Brush,"Cleaning tools for sweeping dirt",7.99,false
+Power Cord,"Electric cord for connecting to power source",16.99,false
+Housing Casing,"Outer casing for enclosing the internal components",29.99,false

@@ -1,4 +1,9 @@
 {% extends 'base.html' %}
+
+{% block left_column %}
+    {% include 'purchase_content.html' %}
+{% endblock %}
+
 {% block content %}
 <h4>Create Purchase Order</h4>
 <form method="POST" action="{{ url_for('po.create_po') }}">

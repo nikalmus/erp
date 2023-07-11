@@ -24,6 +24,7 @@ def home():
 
 def create_app():
     app = Flask(__name__)
+    app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
     app.secret_key = 'my_secret_key_here'
     app.register_blueprint(home_bp)
     app.register_blueprint(manufacturing_bp)
