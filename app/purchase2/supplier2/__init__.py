@@ -1,1 +1,0 @@
-from app.purchase2.supplier2 import routes

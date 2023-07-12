@@ -3,7 +3,6 @@ from flask import Flask, Blueprint, render_template
 from app.manufacturing import bp as manufacturing_bp
 from app.inventory import bp as inventory_bp
 from app.purchase import bp as purchase_bp
-from app.purchase2 import bp as purchase2_bp
 from app.xtras import bp as xtras_bp
 
 from app.manufacturing.product.routes import bp as product_bp
@@ -16,7 +15,6 @@ from app.purchase.supplier.routes import bp as supplier_bp
 from app.inventory.inventory_item.routes import bp as inventory_item_bp
 from app.inventory.stock_move.routes import bp as stock_move_bp
 
-from app.purchase2.supplier2.routes import bp as supplier2_bp
 from app.xtras.csv.routes import bp as csv_bp
 
 from app.db import connect
@@ -34,14 +32,12 @@ def create_app():
     app.register_blueprint(manufacturing_bp)
     app.register_blueprint(inventory_bp)
     app.register_blueprint(purchase_bp)
-    app.register_blueprint(purchase2_bp)
     app.register_blueprint(xtras_bp)
     app.register_blueprint(product_bp, db_conn = connect)
     app.register_blueprint(bom_bp, db_conn = connect)
     app.register_blueprint(mo_bp, db_conn = connect)
     app.register_blueprint(po_bp, db_conn = connect)
     app.register_blueprint(supplier_bp, db_conn = connect)
-    app.register_blueprint(supplier2_bp)
     app.register_blueprint(csv_bp)
     app.register_blueprint(inventory_item_bp, db_conn = connect)
     app.register_blueprint(stock_move_bp, db_conn = connect)
