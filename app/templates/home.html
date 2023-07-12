@@ -3,15 +3,18 @@
     {% include 'top_nav.html' %}
 {% endblock %}
 {% block content %}
-    <img src="{{ url_for('static', filename='images/db-diagram.png') }}" alt="db diagram">
+    <div class="image-container">
+      <img src="{{ url_for('static', filename='images/db-diagram.png') }}" alt="db diagram">
+      <div class="patch"></div>
+    </div>    
     <h6>How to start:</h6>
     <div class="columns">
         <div class="column">
-          <strong>Manufacturing</strong>: create Products and a Bill of Materials. Both support import from CSV.<br>
-          Or skip Product creation and import a BOM with associated BOM Lines from CSV.<br>
-          CSV must contain a top product (assembly) and products (component parts) for individual BOM Lines. See Help for samples.<br>
-          If a product associated with a BOM Line is not found, it will be created automatically. <br>
-          Duplicates are skipped.<br>
+          <strong>Manufacturing</strong>: create Products and a BOM.<br> 
+          Both support CSV import.<br>
+          Product duplicates are skipped.<br> 
+          CSV for BOM must contain a top product (assembly) and products (component parts) for individual BOM Lines. 
+          <a href="{{ url_for('csv.get_csv') }}">Find CSV samples here.</a><br>
           <strong>Purchase</strong>: create Supplier(s).<br>
           Now that you have Suppliers and Products, you can create Purchase Orders either manually or import from CSV.<br>
           Mark PO as completed when items are received.
