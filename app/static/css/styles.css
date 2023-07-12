@@ -136,6 +136,26 @@ header .banner-content img {
   padding-bottom: 1%;
 }
 
+.image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.patch {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  height: 100%;
+  width: 21%; 
+  background-color: #333; 
+}
+
+.warning {
+  background-color: #ff6600; /* Set the desired background color */
+  padding: 10px; /* Adjust the padding as needed */
+  color: #fff; /* Set the desired text color */
+}
+
 footer{
   margin-top: 5%;
 }
