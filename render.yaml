@@ -1,0 +1,13 @@
+name: erp
+
+services:
+  web:
+    command: gunicorn app:app
+    env:
+      DB_HOST: $DB_HOST
+      DB_PORT: $DB_PORT
+      DB_NAME: $DB_NAME
+      DB_USER: $DB_USER
+      DB_PASSWORD: $DB_PASSWORD
+    include:
+      - schema.sql
