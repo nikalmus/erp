@@ -43,3 +43,5 @@ def create_app():
     app.register_blueprint(stock_move_bp, db_conn = connect)
 
     return app
+
+app = create_app()
