@@ -10,11 +10,16 @@
     <div class="form-group mt-3 mb-3">
         <label for="supplier">Assembly:</label>
         <select class="form-control" id="supplier" name="product_id" required>
-            {% for product in products if product[4] %}
+            {% if products|length > 0 %}
+            <option value="" disabled selected>Select assembly</option>
+            {% else %}
+            <option value="" disabled selected>No new assemblies available.</option>
+        {% endif %}
+            {% for product in products %}
                     <option value="{{ product[0] }}">{{ product[1] }}</option>
             {% endfor %}
         </select>
     </div>
-    <button type="submit" class="btn btn-success">Create BOM</button>
+    <button type="submit" class="btn btn-success" {% if products|length == 0 %}disabled{% endif %}>Create BOM</button>
 </form>
 {% endblock %}

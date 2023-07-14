@@ -75,11 +75,14 @@ def create_bom():
 
         return redirect(url_for('bom.get_bom', id=bom_id))
     
-    # Retrieve the list of products as soon as /create route is accessed
+
+    # As soon as /create route is accessed retrieve the list of products 
+    # where is_assembly is True and no corresponding bom exists
     conn = connect()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM product")
+    cursor.execute("""SELECT * FROM product WHERE is_assembly = True
+                    AND NOT EXISTS ( SELECT 1 FROM bom WHERE product.id = bom.product_id)""")
     products = cursor.fetchall()
 
     cursor.close()
