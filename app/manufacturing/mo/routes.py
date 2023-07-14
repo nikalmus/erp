@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, render_template, redirect, request, session, url_for
+from flask import Blueprint, flash, jsonify, render_template, redirect, request, session, url_for
 from app.db import connect
 
 
@@ -149,9 +149,8 @@ def get_mo(id):
                     JOIN product ON bom.product_id = product.id \
                     WHERE mo.id = %s", (id,))
 
+    mo_columns = [column[0] for column in cursor.description]
     mo = cursor.fetchone()
-    
-    session['mo'] = mo
 
     cursor.execute("""
         SELECT bom_line.id, bom_line.bom_id, bom_line.component_id, product.name,
@@ -168,16 +167,26 @@ def get_mo(id):
         GROUP BY bom_line.id, bom_line.bom_id, bom_line.component_id, product.name, bom_line.quantity, product.price
     """, (mo[0], mo[3]))
 
+    bom_line_columns = [column[0] for column in cursor.description]
     bom_lines = cursor.fetchall()
     
-    session['bom_lines'] = bom_lines
-
-    print("BOM Lines inside GET:", bom_lines)
     components_cost = sum(bom_line[5] * bom_line[4] for bom_line in bom_lines)
 
     cursor.close()
     conn.close()
 
+    if request.headers.get('Content-Type') == 'application/json':
+        # Return JSON response
+        response_data = {
+            'mo': dict(zip(mo_columns, mo)),
+            'bom_lines': [dict(zip(bom_line_columns, row)) for row in bom_lines],
+            'components_cost': components_cost
+        }
+        return jsonify(response_data)
+
+    # Return HTML response
+    session['mo'] = mo
+    session['bom_lines'] = bom_lines
     return render_template('mo_detail.html', mo=mo, bom_lines=bom_lines, components_cost=components_cost)
 
 
