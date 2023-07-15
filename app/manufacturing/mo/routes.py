@@ -152,6 +152,14 @@ def get_mo(id):
     mo_columns = [column[0] for column in cursor.description]
     mo = cursor.fetchone()
 
+    if mo is None:
+        cursor.close()
+        conn.close()
+        if request.headers.get('Content-Type') == 'application/json':
+            return jsonify({'error': 'Record not found'})
+        else:
+            return render_template('manufacturing_error.html', error_message='Record not found')
+
     cursor.execute("""
         SELECT bom_line.id, bom_line.bom_id, bom_line.component_id, product.name,
         bom_line.quantity, product.price,
