@@ -2,3 +2,4 @@ __pycache__
 erp-venv
 .env
 xfrags/
+events/keys/

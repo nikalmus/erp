@@ -1,3 +1,4 @@
+import os
 import csv
 from flask import Blueprint, flash, render_template, redirect, request, url_for
 from app.db import connect
@@ -68,6 +69,48 @@ def get_po(id):
         # Retrieve the updated PO information
         cursor.execute("SELECT id, date_created, received_date, status, supplier_id FROM po WHERE id = %s", (id,))
         po_status = cursor.fetchone()[3]
+
+        # Check if the status is "Approved" and publish message to Pub/Sub
+        if status == 'Approved':
+            # Retrieve PO, PO lines, related products, and supplier's contact information
+            cursor.execute("""
+                SELECT
+                    po.id, po.date_created, po.status,
+                    supplier.name AS supplier_name, supplier.contact AS supplier_contact,
+                    po_line.id AS po_line_id, po_line.quantity,
+                    product.name AS product_name, product.price
+                FROM
+                    po
+                    JOIN supplier ON po.supplier_id = supplier.id
+                    JOIN po_line ON po.id = po_line.po_id
+                    JOIN product ON po_line.product_id = product.id
+                WHERE
+                    po.id = %s
+                """, (id,))
+            result = cursor.fetchall()
+
+            # Prepare the message data
+            message_data = {
+                'po_id': result[0][0],
+                'date_created': result[0][1],
+                'status': result[0][2],
+                'supplier_name': result[0][3],
+                'supplier_contact': result[0][4],
+                'po_lines': []
+            }
+
+            # Iterate over the PO lines and append them to the message data
+            for row in result:
+                po_line = {
+                    'po_line_id': row[5],
+                    'quantity': row[6],
+                    'product_name': row[7],
+                    'product_price': row[8]
+                }
+                message_data['po_lines'].append(po_line)
+
+            # Publish message to the "po-approved" topic
+            publish_po_approved_message(message_data)
         
         if po_status == "Completed":
             # Retrieve the PO lines
@@ -286,3 +329,39 @@ def import_csv():
                 return redirect(url_for('po.get_po', id=po_id))
 
     return redirect(url_for('po.get_pos'))
+
+def publish_po_approved_message(message_data):
+    import os
+    from dotenv import load_dotenv
+    from google.cloud import pubsub
+    from google.oauth2 import service_account
+
+    load_dotenv('app/.env')
+
+    keyfile = os.environ['GOOGLE_APPLICATION_CREDENTIALS']
+    # project_id = os.environ['GOOGLE_PROJECT_ID']
+    # client_email = os.environ['GOOGLE_CLIENT_EMAIL']
+    # private_key = os.environ['GOOGLE_PRIVATE_KEY']
+
+    # credentials = {
+    #     'type': 'service_account',
+    #     'client_email': client_email,
+    #     'private_key': private_key,
+    # }
+
+    topic = 'po-approved'
+    project_id = 'bright-folder-392820'
+    credentials = service_account.Credentials.from_service_account_file(keyfile)
+
+    # Publish message to the "po-approved" topic
+
+    publisher = pubsub.PublisherClient(credentials=credentials)
+    topic_path = publisher.topic_path(project_id, topic)
+
+    # Publish the message
+
+    try:
+        publisher.publish(topic_path, data=str(message_data).encode())
+    except Exception as e:
+        print(f"Error occurred while publishing the message: {e}")
+
