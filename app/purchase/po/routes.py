@@ -338,27 +338,29 @@ def publish_po_approved_message(message_data):
 
     load_dotenv('app/.env')
 
-    keyfile = os.environ['GOOGLE_APPLICATION_CREDENTIALS']
-    # project_id = os.environ['GOOGLE_PROJECT_ID']
-    # client_email = os.environ['GOOGLE_CLIENT_EMAIL']
-    # private_key = os.environ['GOOGLE_PRIVATE_KEY']
+    #keyfile = os.environ['GOOGLE_APPLICATION_CREDENTIALS']
+    project_id = os.environ['GOOGLE_PROJECT_ID']
+    client_email = os.environ['GOOGLE_CLIENT_EMAIL']
+    private_key = os.environ['GOOGLE_PRIVATE_KEY']
+    token_uri = os.environ['GOOGLE_TOKEN_URI']
 
-    # credentials = {
-    #     'type': 'service_account',
-    #     'client_email': client_email,
-    #     'private_key': private_key,
-    # }
+    credentials = {
+        'type': 'service_account',
+        'client_email': client_email,
+        'private_key': private_key,
+        'token_uri': token_uri
+    }
+
+    print(credentials)
+    print(project_id)
 
     topic = 'po-approved'
-    project_id = 'bright-folder-392820'
-    credentials = service_account.Credentials.from_service_account_file(keyfile)
 
-    # Publish message to the "po-approved" topic
+    # credentials = service_account.Credentials.from_service_account_file(keyfile)
+    credentials = service_account.Credentials.from_service_account_info(credentials)
 
     publisher = pubsub.PublisherClient(credentials=credentials)
     topic_path = publisher.topic_path(project_id, topic)
-
-    # Publish the message
 
     try:
         publisher.publish(topic_path, data=str(message_data).encode())

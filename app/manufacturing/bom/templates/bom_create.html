@@ -8,8 +8,8 @@
 <h4>Create Bill of Materials</h4>
 <form method="POST" action="{{ url_for('bom.create_bom') }}">
     <div class="form-group mt-3 mb-3">
-        <label for="supplier">Assembly:</label>
-        <select class="form-control" id="supplier" name="product_id" required>
+        <label for="product">Assembly:</label>
+        <select class="form-control" id="product" name="product_id" required>
             {% if products|length > 0 %}
             <option value="" disabled selected>Select assembly</option>
             {% else %}
