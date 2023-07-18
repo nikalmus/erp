@@ -74,7 +74,7 @@
         </tr>
     </table>
 
-    {% if po[3] != 'Completed' %}
+    {% if po[3] != 'Approved' and po[3] != 'In Progress' and po[3] != 'Completed' %}
         <h4>Add PO Line</h4>
         <form method="POST" action="{{ url_for('po.add_po_line', id=po[0]) }}">
             <div class="form-group mb-3 mt-3">
